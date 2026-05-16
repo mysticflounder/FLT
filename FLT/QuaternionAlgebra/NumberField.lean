@@ -430,10 +430,12 @@ private lemma GL2.toAdicCompletion_restrictedProduct_symm_apply
   ext i j
   exact GL2.toAdicCompletion_restrictedProduct_symm_val_apply w x i j
 
+namespace GL2.Internal
+
 /-- Bridging lemma: applying `GL2.toAdicCompletion w` to the embedding of a single
 local element `g_loc` at place `v` via the restricted product isomorphism gives
 `g_loc` if `w = v` and `1` otherwise. -/
-lemma GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_same
+lemma toAdicCompletion_restrictedProduct_symm_mulSingle_same
     [DecidableEq (HeightOneSpectrum (𝓞 F))]
     (v : HeightOneSpectrum (𝓞 F)) (g_loc : GL (Fin 2) (v.adicCompletion F)) :
     GL2.toAdicCompletion v
@@ -443,7 +445,7 @@ lemma GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_same
   rw [GL2.toAdicCompletion_restrictedProduct_symm_val_apply,
     RestrictedProduct.mulSingle_eq_same]
 
-lemma GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_ne
+lemma toAdicCompletion_restrictedProduct_symm_mulSingle_ne
     [DecidableEq (HeightOneSpectrum (𝓞 F))]
     {w v : HeightOneSpectrum (𝓞 F)} (hwv : w ≠ v)
     (g_loc : GL (Fin 2) (v.adicCompletion F)) :
@@ -453,6 +455,8 @@ lemma GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_ne
   ext i j
   rw [GL2.toAdicCompletion_restrictedProduct_symm_val_apply,
     RestrictedProduct.mulSingle_eq_of_ne _ _ hwv]
+
+end GL2.Internal
 
 end IsDedekindDomain.FiniteAdeleRing
 

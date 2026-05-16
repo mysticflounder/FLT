@@ -93,6 +93,8 @@ lemma uniformizer_ne_zero : uniformizer (F := F) v ≠ 0 := by
   simpa [uniformizer] using
     IsDedekindDomain.HeightOneSpectrum.adicCompletionUniformizer_ne_zero (K := F) v
 
+namespace Internal
+
 lemma swap_mem_localFullLevel :
     Matrix.GeneralLinearGroup.swap (adicCompletion F v) (0 : Fin 2) 1 ∈ GL2.localFullLevel v := by
   rw [GL2.mem_localFullLevel_iff_v_le_one_and_v_det_eq_one]
@@ -100,6 +102,8 @@ lemma swap_mem_localFullLevel :
   · intro i j
     fin_cases i <;> fin_cases j <;> simp [Matrix.GeneralLinearGroup.swap, Matrix.swap]
   · simp [Matrix.GeneralLinearGroup.swap, Matrix.swap]
+
+end Internal
 
 set_option linter.flexible false in
 private lemma unipotent_mem_localFullLevel (t : v.adicCompletionIntegers F) :
@@ -133,6 +137,8 @@ noncomputable def unipotent_mul_diag (t : v.adicCompletionIntegers F) :
     (GL (Fin 2) (adicCompletion F v)) :=
   (unipotent (t : adicCompletion F v)) * (diag α hα)
 
+namespace Internal
+
 /-- `!![α s; 0 1] * !![β t; 0 1] = !![αβ, αt+s; 0 1]`. -/
 lemma unipotent_mul_diag_mul_unipotent_mul_diag
     {β : v.adicCompletionIntegers F} (hβ : β ≠ 0)
@@ -142,6 +148,8 @@ lemma unipotent_mul_diag_mul_unipotent_mul_diag
   ext i j
   push_cast [unipotent_mul_diag, unipotent_def, diag_def]
   fin_cases i <;> fin_cases j <;> simp [Matrix.mul_apply, Fin.sum_univ_two]
+
+end Internal
 
 /-- `!![α t₁; 0 1]⁻¹ * [α t₂; 0 1] = [1 (t₂ - t₁) / α; 0 1]`. -/
 lemma unipotent_mul_diag_inv_mul_unipotent_mul_diag (t₁ t₂ : v.adicCompletionIntegers F) :
@@ -376,6 +384,8 @@ private lemma uniformizerInt_spec (v : HeightOneSpectrum (𝓞 F)) :
       (v.intValuation_exists_uniformizer.choose_spec : v.intValuation
         (v.intValuation_exists_uniformizer.choose) = WithZero.exp (-1 : ℤ))
 
+namespace Internal
+
 lemma uniformizerInt_ne_zero (v : HeightOneSpectrum (𝓞 F)) : uniformizerInt (F := F) v ≠ 0 := by
   intro h
   have h' := uniformizerInt_spec (F := F) v
@@ -426,7 +436,7 @@ private lemma mapsTo_localFullLevelDiagLocalFullLevelRep_localFullLevelDiagLocal
   | none =>
       change swap_mul_diagLocalFullLevel (v := v) ∈ localFullLevelDiagLocalFullLevel (v := v)
       exact Set.mem_image_of_mem QuotientGroup.mk
-        (Set.mul_mem_mul (swap_mem_localFullLevel (v := v)) rfl)
+        (Set.mul_mem_mul (GL2.Internal.swap_mem_localFullLevel (v := v)) rfl)
   | some t =>
       change unipotent_mul_diagLocalFullLevel (v := v) t ∈ localFullLevelDiagLocalFullLevel (v := v)
       exact Set.mem_image_of_mem QuotientGroup.mk
@@ -999,6 +1009,8 @@ lemma surjOn_localFullLevelDiagLocalFullLevelRep_localFullLevelDiagLocalFullLeve
             adicCompletion F v)) = 1
       rw [hdet_units]
       simpa using (GL2.v_det_val_mem_localFullLevel_eq_one hx)
+
+end Internal
 
 end GoodPrimeCosetDecomposition
 

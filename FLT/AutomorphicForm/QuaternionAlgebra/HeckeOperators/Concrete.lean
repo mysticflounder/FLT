@@ -113,6 +113,8 @@ namespace TotallyDefiniteQuaternionAlgebra.WeightTwoAutomorphicForm
 
 open IsDedekindDomain.HeightOneSpectrum
 
+open FiniteAdeleRing.GL2.Internal
+
 open scoped TensorProduct
 
 -- Oops! This is also `IsDedekindDomain.HeightOneSpectrum.QuaternionAlgebra.TameLevel`
@@ -123,6 +125,8 @@ open scoped TensorProduct.RightActions in
 /-- U1(S) -/
 noncomputable abbrev U1 : Subgroup (D ⊗[F] (IsDedekindDomain.FiniteAdeleRing (𝓞 F) F))ˣ :=
   Subgroup.map (Units.map r.symm.toMonoidHom) (GL2.TameLevel S)
+
+namespace Internal
 
 variable {F D} in
 open scoped TensorProduct.RightActions in
@@ -150,6 +154,8 @@ lemma U1_open :
   exact (GL2.TameLevel.isOpen S).preimage
     (Continuous.units_map r.toMonoidHom hcr)
 
+end Internal
+
 variable (R : Type*) [CommRing R]
 
 namespace HeckeOperator
@@ -168,9 +174,10 @@ noncomputable def T (v : HeightOneSpectrum (𝓞 F)) :
       (FiniteAdeleRing.GL2.restrictedProduct.symm
         (RestrictedProduct.mulSingle _ v
           (Local.GL2.diag (Local.uniformizerInt (F := F) v)
-            (Local.uniformizerInt_ne_zero (F := F) v))))
+            (Local.Internal.uniformizerInt_ne_zero (F := F) v))))
   AbstractHeckeOperator.HeckeOperator (R := R) g (U1 r S) (U1 r S)
-  (QuotientGroup.mk_image_finite_of_compact_of_open (U1_compact r S) (U1_open r S))
+  (QuotientGroup.mk_image_finite_of_compact_of_open
+    (Internal.U1_compact r S) (Internal.U1_open r S))
 
 section T
 
@@ -192,7 +199,7 @@ noncomputable abbrev uniformizerInt (v : HeightOneSpectrum (𝓞 F)) : v.adicCom
 omit [IsTotallyReal F] in
 private lemma uniformizerInt_ne_zero (v : HeightOneSpectrum (𝓞 F)) :
     uniformizerInt (F := F) v ≠ 0 :=
-  Local.uniformizerInt_ne_zero (F := F) v
+  Local.Internal.uniformizerInt_ne_zero (F := F) v
 
 /-- The representative for the `swap * diag` good-prime coset. -/
 @[nolint docBlame]
@@ -405,15 +412,15 @@ theorem bijOn_unipotent_mul_diagU1_U1diagU1 (hv : v ∈ S) :
       refine ⟨fun w => ?_, fun w _ => ?_⟩
       · by_cases hwv : w = v
         · subst hwv
-          rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_same w _]
+          rw [toAdicCompletion_restrictedProduct_symm_mulSingle_same w _]
           exact (Local.GL2.unipotent_mem_U1 (v := w) (Quotient.out i)).1
-        · rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+        · rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
           exact (GL2.localFullLevel w).one_mem
       · by_cases hwv : w = v
         · subst hwv
-          rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_same w _]
+          rw [toAdicCompletion_restrictedProduct_symm_mulSingle_same w _]
           exact Local.GL2.unipotent_mem_U1 (v := w) (Quotient.out i)
-        · rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+        · rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
           exact (GL2.localTameLevel w).one_mem
     -- Show `unipotent_mul_diag r α hα i = u_glob * diag r α hα`.
     have h_eq : unipotent_mul_diag r α hα i = u_glob * diag r α hα := by
@@ -464,7 +471,7 @@ theorem bijOn_unipotent_mul_diagU1_U1diagU1 (hv : v ∈ S) :
     have hg_loc_mem : g_loc ∈ GL2.localFullLevel v := by
       have := hw'_mem.1 v
       rwa [hw'_def,
-        FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_same v g_loc] at this
+        toAdicCompletion_restrictedProduct_symm_mulSingle_same v g_loc] at this
     -- Entry (0,1) of `g_loc`, which equals `α⁻¹ * (t_j - t_i)`, must be in `O_v`.
     have h01_int : ((g_loc : GL (Fin 2) (adicCompletion F v)) 0 1) ∈
         (adicCompletionIntegers F v) := GL2.v_le_one_of_mem_localFullLevel _ hg_loc_mem 0 1
@@ -534,26 +541,26 @@ theorem bijOn_unipotent_mul_diagU1_U1diagU1 (hv : v ∈ S) :
         · subst hwv
           rw [hW_def]
           simp only [map_mul, map_inv]
-          rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_same w_place _,
-            FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_same w_place _]
+          rw [toAdicCompletion_restrictedProduct_symm_mulSingle_same w_place _,
+            toAdicCompletion_restrictedProduct_symm_mulSingle_same w_place _]
           exact hlocal_ratio.1
         · rw [hW_def]
           simp only [map_mul, map_inv]
-          rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _,
-            FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+          rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _,
+            toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
           simp only [inv_one, one_mul, mul_one]
           exact hw_mem.1 w_place
       · by_cases hwv : w_place = v
         · subst hwv
           rw [hW_def]
           simp only [map_mul, map_inv]
-          rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_same w_place _,
-            FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_same w_place _]
+          rw [toAdicCompletion_restrictedProduct_symm_mulSingle_same w_place _,
+            toAdicCompletion_restrictedProduct_symm_mulSingle_same w_place _]
           exact hlocal_ratio
         · rw [hW_def]
           simp only [map_mul, map_inv]
-          rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _,
-            FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+          rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _,
+            toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
           simp only [inv_one, one_mul, mul_one]
           exact hw_mem.2 w_place hwS
     · -- Show `Units.map r.symm.toMonoidHom W = ratio`.
@@ -571,7 +578,8 @@ lemma unipotent_mul_diag_image_finite :
   apply (Set.BijOn.finite_iff_finite
     (bijOn_unipotent_mul_diagU1_U1diagU1 r {v} α hα (Finset.mem_singleton.mpr rfl))).mpr
   unfold U1diagU1
-  exact (QuotientGroup.mk_image_finite_of_compact_of_open (U1_compact r {v}) (U1_open r {v}))
+  exact (QuotientGroup.mk_image_finite_of_compact_of_open
+    (Internal.U1_compact r {v}) (Internal.U1_open r {v}))
 
 set_option maxHeartbeats 800000 in
 -- elevated: T-coset BijOn unfolds the P¹(kᵥ)-indexed decomposition with case splits.
@@ -604,15 +612,15 @@ private theorem bijOn_T_cosets_U1diagU1
           refine ⟨fun w => ?_, fun w hwS => ?_⟩
           · by_cases hwv : w = v
             · subst hwv
-              rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_same w _]
-              exact Local.GL2.swap_mem_localFullLevel (v := w)
-            · rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+              rw [toAdicCompletion_restrictedProduct_symm_mulSingle_same w _]
+              exact Local.GL2.Internal.swap_mem_localFullLevel (v := w)
+            · rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
               exact (GL2.localFullLevel w).one_mem
           · by_cases hwv : w = v
             · subst hwv
-              rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_same w _]
+              rw [toAdicCompletion_restrictedProduct_symm_mulSingle_same w _]
               exact absurd hwS hv
-            · rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+            · rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
               exact (GL2.localTameLevel w).one_mem
         have h_eq : GoodPrime.swap_mul_diag (r := r) v = u_glob * diag r π hπ := by
           rw [hu_glob_def]
@@ -634,15 +642,15 @@ private theorem bijOn_T_cosets_U1diagU1
           refine ⟨fun w => ?_, fun w _ => ?_⟩
           · by_cases hwv : w = v
             · subst hwv
-              rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_same w _]
+              rw [toAdicCompletion_restrictedProduct_symm_mulSingle_same w _]
               exact (Local.GL2.unipotent_mem_U1 (v := w) (Quotient.out i)).1
-            · rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+            · rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
               exact (GL2.localFullLevel w).one_mem
           · by_cases hwv : w = v
             · subst hwv
-              rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_same w _]
+              rw [toAdicCompletion_restrictedProduct_symm_mulSingle_same w _]
               exact Local.GL2.unipotent_mem_U1 (v := w) (Quotient.out i)
-            · rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+            · rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
               exact (GL2.localTameLevel w).one_mem
         have h_eq : GoodPrime.unipotent_mul_diag (r := r) v π hπ i = u_glob * diag r π hπ := by
           rw [hu_glob_def]
@@ -672,18 +680,19 @@ private theorem bijOn_T_cosets_U1diagU1
       ext
       simp
     have hlocal :
-        Local.localFullLevelDiagLocalFullLevelRep (v := v) t =
-          Local.localFullLevelDiagLocalFullLevelRep (v := v) t' := by
+        Local.Internal.localFullLevelDiagLocalFullLevelRep (v := v) t =
+          Local.Internal.localFullLevelDiagLocalFullLevelRep (v := v) t' := by
       rw [hW_eq'] at hWv
       simp only [map_mul, map_inv] at hWv
       cases t <;> cases t' <;>
-        simp [Local.localFullLevelDiagLocalFullLevelRep, Local.swap_mul_diagLocalFullLevel,
-          Local.unipotent_mul_diagLocalFullLevel, GoodPrime.goodPrimeRep,
+        simp [Local.Internal.localFullLevelDiagLocalFullLevelRep,
+          Local.Internal.swap_mul_diagLocalFullLevel,
+          Local.Internal.unipotent_mul_diagLocalFullLevel, GoodPrime.goodPrimeRep,
           GoodPrime.swap_mul_diag, GoodPrime.unipotent_mul_diag, hmap_symm,
-          FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_same] at hWv ⊢
+          toAdicCompletion_restrictedProduct_symm_mulSingle_same] at hWv ⊢
       all_goals exact QuotientGroup.eq.mpr hWv
     have ht :=
-      Local.injOn_localFullLevelDiagLocalFullLevelRep (v := v) trivial trivial hlocal
+      Local.Internal.injOn_localFullLevelDiagLocalFullLevelRep (v := v) trivial trivial hlocal
     rw [ht]
   · rintro _ ⟨_, ⟨u, hu, _, rfl, rfl⟩, rfl⟩
     obtain ⟨w, hw_mem, hw_eq⟩ := Subgroup.mem_map.mp hu
@@ -692,10 +701,10 @@ private theorem bijOn_T_cosets_U1diagU1
     have hg_loc_full : g_loc ∈ GL2.localFullLevel v := hw_mem.1 v
     have hlocal_target :
         QuotientGroup.mk (g_loc * Local.GL2.diag π hπ) ∈
-          Local.localFullLevelDiagLocalFullLevel (v := v) :=
+          Local.Internal.localFullLevelDiagLocalFullLevel (v := v) :=
       ⟨_, Set.mul_mem_mul hg_loc_full rfl, rfl⟩
     obtain ⟨idx, _, hidx⟩ :=
-      Local.surjOn_localFullLevelDiagLocalFullLevelRep_localFullLevelDiagLocalFullLevel
+      Local.Internal.surjOn_localFullLevelDiagLocalFullLevelRep_localFullLevelDiagLocalFullLevel
         (v := v) hlocal_target
     cases idx with
     | none =>
@@ -704,7 +713,7 @@ private theorem bijOn_T_cosets_U1diagU1
               (Matrix.GeneralLinearGroup.swap (adicCompletion F v) (0 : Fin 2) 1 *
                 Local.GL2.diag π hπ) =
             QuotientGroup.mk (s := GL2.localFullLevel v) (g_loc * Local.GL2.diag π hπ) := by
-          simpa [Local.localFullLevelDiagLocalFullLevelRep] using hidx
+          simpa [Local.Internal.localFullLevelDiagLocalFullLevelRep] using hidx
         have hlocal_ratio :
             (Matrix.GeneralLinearGroup.swap (adicCompletion F v) (0 : Fin 2) 1 *
               Local.GL2.diag π hπ)⁻¹ *
@@ -726,23 +735,23 @@ private theorem bijOn_T_cosets_U1diagU1
             · subst hwv
               rw [hW_def]
               simp only [map_mul, map_inv]
-              rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_same
+              rw [toAdicCompletion_restrictedProduct_symm_mulSingle_same
                 w_place _,
-                FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_same
+                toAdicCompletion_restrictedProduct_symm_mulSingle_same
                   w_place _]
               exact hlocal_ratio
             · rw [hW_def]
               simp only [map_mul, map_inv]
-              rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _,
-                FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+              rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _,
+                toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
               simp only [inv_one, one_mul, mul_one]
               exact hw_mem.1 w_place
           · by_cases hwv : w_place = v
             · subst hwv; exact absurd hwS hv
             · rw [hW_def]
               simp only [map_mul, map_inv]
-              rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _,
-                FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+              rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _,
+                toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
               simp only [inv_one, one_mul, mul_one]
               exact hw_mem.2 w_place hwS
         · rw [← hw_eq]
@@ -758,7 +767,7 @@ private theorem bijOn_T_cosets_U1diagU1
               (Local.GL2.unipotent_mul_diag π hπ
                 (Quotient.out t : adicCompletionIntegers F v)) =
             QuotientGroup.mk (s := GL2.localFullLevel v) (g_loc * Local.GL2.diag π hπ) := by
-          simpa [Local.localFullLevelDiagLocalFullLevelRep] using hidx
+          simpa [Local.Internal.localFullLevelDiagLocalFullLevelRep] using hidx
         have hlocal_ratio :
             (Local.GL2.unipotent_mul_diag π hπ
                 (Quotient.out t : adicCompletionIntegers F v))⁻¹ *
@@ -780,23 +789,23 @@ private theorem bijOn_T_cosets_U1diagU1
             · subst hwv
               rw [hW_def]
               simp only [map_mul, map_inv]
-              rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_same
+              rw [toAdicCompletion_restrictedProduct_symm_mulSingle_same
                 w_place _,
-                FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_same
+                toAdicCompletion_restrictedProduct_symm_mulSingle_same
                   w_place _]
               exact hlocal_ratio
             · rw [hW_def]
               simp only [map_mul, map_inv]
-              rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _,
-                FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+              rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _,
+                toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
               simp only [inv_one, one_mul, mul_one]
               exact hw_mem.1 w_place
           · by_cases hwv : w_place = v
             · subst hwv; exact absurd hwS hv
             · rw [hW_def]
               simp only [map_mul, map_inv]
-              rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _,
-                FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+              rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _,
+                toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
               simp only [inv_one, one_mul, mul_one]
               exact hw_mem.2 w_place hwS
         · rw [← hw_eq]
@@ -822,14 +831,16 @@ private lemma T_comm_of_ne {v w : HeightOneSpectrum (𝓞 F)} (hv : v ∉ S) (hw
         (FiniteAdeleRing.GL2.restrictedProduct.symm
           (RestrictedProduct.mulSingle _ v
             (Local.GL2.diag (Local.uniformizerInt (F := F) v)
-              (Local.uniformizerInt_ne_zero (F := F) v)))))
+              (Local.Internal.uniformizerInt_ne_zero (F := F) v)))))
       (g₂ := Units.mapEquiv r.symm.toMulEquiv
         (FiniteAdeleRing.GL2.restrictedProduct.symm
           (RestrictedProduct.mulSingle _ w
             (Local.GL2.diag (Local.uniformizerInt (F := F) w)
-              (Local.uniformizerInt_ne_zero (F := F) w)))))
-      (h₁ := QuotientGroup.mk_image_finite_of_compact_of_open (U1_compact r S) (U1_open r S))
-      (h₂ := QuotientGroup.mk_image_finite_of_compact_of_open (U1_compact r S) (U1_open r S))
+              (Local.Internal.uniformizerInt_ne_zero (F := F) w)))))
+      (h₁ := QuotientGroup.mk_image_finite_of_compact_of_open
+        (Internal.U1_compact r S) (Internal.U1_open r S))
+      (h₂ := QuotientGroup.mk_image_finite_of_compact_of_open
+        (Internal.U1_compact r S) (Internal.U1_open r S))
       (hcomm := by
         refine ⟨HeckeOperator.GoodPrime.T_cosets_image (r := r) v,
           HeckeOperator.GoodPrime.T_cosets_image (r := r) w, ?_, ?_, ?_⟩
@@ -885,7 +896,8 @@ noncomputable def U :
     WeightTwoAutomorphicFormOfLevel (U1 r S) R →ₗ[R]
     WeightTwoAutomorphicFormOfLevel (U1 r S) R :=
   AbstractHeckeOperator.HeckeOperator (R := R) (diag r α hα) (U1 r S) (U1 r S)
-  (QuotientGroup.mk_image_finite_of_compact_of_open (U1_compact r S) (U1_open r S))
+  (QuotientGroup.mk_image_finite_of_compact_of_open
+    (Internal.U1_compact r S) (Internal.U1_open r S))
 
 lemma _root_.Ne.mul {M₀ : Type*} [Mul M₀] [Zero M₀] [NoZeroDivisors M₀] {a b : M₀}
   (ha : a ≠ 0) (hb : b ≠ 0) : a * b ≠ 0 := mul_ne_zero ha hb
@@ -936,7 +948,7 @@ private lemma unipotent_mul_diag_lift_mul {β : v.adicCompletionIntegers F} (hβ
       ((α : adicCompletionIntegers F v) * t + s) := by
   simp only [unipotent_mul_diag_lift, ← map_mul, ← RestrictedProduct.mulSingle_mul]
   congr 3
-  exact Local.GL2.unipotent_mul_diag_mul_unipotent_mul_diag α hα hβ s t
+  exact Local.GL2.Internal.unipotent_mul_diag_mul_unipotent_mul_diag α hα hβ s t
 
 set_option maxHeartbeats 400000 in
 -- elevated: lift action proof rewrites through `mulSingle_mul` + `map_mul` chain.
@@ -969,17 +981,17 @@ private lemma unipotent_mul_diag_lift_smul_eq {γ : v.adicCompletionIntegers F} 
         -- At every place `w`, the element is in `localFullLevel w`.
         by_cases hwv : w = v
         · subst hwv
-          rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_same w _]
+          rw [toAdicCompletion_restrictedProduct_symm_mulSingle_same w _]
           exact (Local.GL2.unipotent_mem_U1 (v := w) m).1
         · -- The image at `w ≠ v` is `1`, which is in `localFullLevel`.
-          rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+          rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
           exact (GL2.localFullLevel w).one_mem
       · intro w hwS
         by_cases hwv : w = v
         · subst hwv
-          rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_same w _]
+          rw [toAdicCompletion_restrictedProduct_symm_mulSingle_same w _]
           exact Local.GL2.unipotent_mem_U1 (v := w) m
-        · rw [FiniteAdeleRing.GL2.toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+        · rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
           exact (GL2.localTameLevel w).one_mem
     · -- Applying `Units.map r.symm.toMonoidHom` to the witness yields `u''`.
       change Units.map r.symm.toMonoidHom _ = u''
@@ -1115,8 +1127,10 @@ private lemma U_comm_of_ne {v w : HeightOneSpectrum (𝓞 F)} (hv : v ∈ S) (hw
         (FiniteAdeleRing.GL2.restrictedProduct.symm
           (RestrictedProduct.mulSingle _ w
             (Local.GL2.diag β hβ))))
-      (h₁ := QuotientGroup.mk_image_finite_of_compact_of_open (U1_compact r S) (U1_open r S))
-      (h₂ := QuotientGroup.mk_image_finite_of_compact_of_open (U1_compact r S) (U1_open r S))
+      (h₁ := QuotientGroup.mk_image_finite_of_compact_of_open
+        (Internal.U1_compact r S) (Internal.U1_open r S))
+      (h₂ := QuotientGroup.mk_image_finite_of_compact_of_open
+        (Internal.U1_compact r S) (Internal.U1_open r S))
       (hcomm := by
         refine ⟨unipotent_mul_diag_image r α hα, unipotent_mul_diag_image r β hβ, ?_, ?_, ?_⟩
         · simpa [unipotent_mul_diag_image, U1diagU1, U1, diag] using
@@ -1141,13 +1155,15 @@ private lemma T_comm_U_of_ne {v w : HeightOneSpectrum (𝓞 F)} (hv : v ∉ S) (
         (FiniteAdeleRing.GL2.restrictedProduct.symm
           (RestrictedProduct.mulSingle _ v
             (Local.GL2.diag (Local.uniformizerInt (F := F) v)
-              (Local.uniformizerInt_ne_zero (F := F) v)))))
+              (Local.Internal.uniformizerInt_ne_zero (F := F) v)))))
       (g₂ := Units.mapEquiv r.symm.toMulEquiv
         (FiniteAdeleRing.GL2.restrictedProduct.symm
           (RestrictedProduct.mulSingle _ w
             (Local.GL2.diag β hβ))))
-      (h₁ := QuotientGroup.mk_image_finite_of_compact_of_open (U1_compact r S) (U1_open r S))
-      (h₂ := QuotientGroup.mk_image_finite_of_compact_of_open (U1_compact r S) (U1_open r S))
+      (h₁ := QuotientGroup.mk_image_finite_of_compact_of_open
+        (Internal.U1_compact r S) (Internal.U1_open r S))
+      (h₂ := QuotientGroup.mk_image_finite_of_compact_of_open
+        (Internal.U1_compact r S) (Internal.U1_open r S))
       (hcomm := by
         refine ⟨HeckeOperator.GoodPrime.T_cosets_image (r := r) v,
           unipotent_mul_diag_image r β hβ, ?_, ?_, ?_⟩
