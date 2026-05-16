@@ -447,8 +447,8 @@ Choose $0\not=\alpha\in\calO_v$ and define $g=\begin{pmatrix}\alpha&0\\0&1\end{p
 Let's do an explicit double coset decomposition in preparation for a calculation with Hecke operators.
 
 \begin{lemma}
-  \lean{TotallyDefiniteQuaternionAlgebra.WeightTwoAutomorphicForm.HeckeOperator.Local.bijOn_unipotent_mul_diagU1_U1diagU1}
-  \label{bijOn_unipotent_mul_diagU1_U1diagU1}
+  \lean{TotallyDefiniteQuaternionAlgebra.WeightTwoAutomorphicForm.HeckeOperator.Local.bijOn_leftCoset_doubleCoset}
+  \label{bijOn_leftCoset_doubleCoset}
   \leanok
   The double coset space $UgU$ is the disjoint union of $g_tU$ as $t$ ranges
   through $\calO_v/\alpha\calO_v$ and $g_t:=\begin{pmatrix}\alpha&\tilde{t}\\0&1\end{pmatrix}$,
@@ -561,7 +561,7 @@ with $a,d\in k_v^\times$ and $a/d\in\Delta_v$. Then
 
 It is easily checked that this is a subgroup, and that
 $\begin{pmatrix}1&*\\0&1\end{pmatrix}\subseteq\Gamma_v\subseteq\begin{pmatrix}*&*\\0&*\end{pmatrix},$
-so lemma~\ref{bijOn_unipotent_mul_diagU1_U1diagU1} applies.
+so lemma~\ref{bijOn_leftCoset_doubleCoset} applies.
 Let $U_{\Delta_v}$ be the preimage of this subgroup in $GL_2(\calO_v)$.
 This is a compact open subgroup of $GL_2(\calO_v)$, by the remarks above.
 

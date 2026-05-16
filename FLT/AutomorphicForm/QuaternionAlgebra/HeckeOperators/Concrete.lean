@@ -382,7 +382,7 @@ lemma unipotent_mul_diag_inj :
     Matrix.unitOfDetInvertible, Matrix.GeneralLinearGroup.diagonal] using h''
 
 /-- The double coset space `U₁(S) diag(αᵥ,1) U₁(S)` as a set of left cosets. -/
-noncomputable def U1diagU1 :
+noncomputable def doubleCoset :
     Set ((D ⊗[F] (FiniteAdeleRing (𝓞 F) F))ˣ ⧸ (U1 r S)) :=
   QuotientGroup.mk '' ((U1 r S) * {diag r α hα})
 
@@ -391,8 +391,8 @@ noncomputable def U1diagU1 :
 set_option maxHeartbeats 800000 in
 -- elevated: BijOn proof unfolds the rigidification push-through across all three goals.
 omit [IsTotallyReal F] [IsQuaternionAlgebra F D] in
-theorem bijOn_unipotent_mul_diagU1_U1diagU1 (hv : v ∈ S) :
-    (unipotent_mul_diag_image r α hα).BijOn QuotientGroup.mk (U1diagU1 r S α hα) := by
+theorem bijOn_leftCoset_doubleCoset (hv : v ∈ S) :
+    (unipotent_mul_diag_image r α hα).BijOn QuotientGroup.mk (doubleCoset r S α hα) := by
   refine ⟨?_, ?_, ?_⟩
   · -- MapsTo: each `unipotent_mul_diag r α hα i` can be written as `u_glob * diag r α hα`
     -- for some `u_glob ∈ U1 r S`, where `u_glob` is the image of a v-supported unipotent
@@ -512,10 +512,10 @@ theorem bijOn_unipotent_mul_diagU1_U1diagU1 (hv : v ∈ S) :
     have hg_loc_tame : g_loc ∈ GL2.localTameLevel v := hw_mem.2 v hv
     -- Apply the local surjOn.
     have hlocal_target :
-        QuotientGroup.mk (g_loc * Local.GL2.diag α hα) ∈ Local.U1diagU1 v α hα :=
+        QuotientGroup.mk (g_loc * Local.GL2.diag α hα) ∈ Local.doubleCoset v α hα :=
       ⟨_, Set.mul_mem_mul hg_loc_tame rfl, rfl⟩
     obtain ⟨t, _, ht⟩ :=
-      Local.surjOn_unipotent_mul_diagU1_U1diagU1 α hα hlocal_target
+      Local.Internal.surjOn_leftCoset_doubleCoset α hα hlocal_target
     -- The local ratio lies in `Local.U1 v = localTameLevel v`.
     have hlocal_ratio :
         (Local.GL2.unipotent_mul_diag α hα
@@ -576,8 +576,8 @@ omit [IsTotallyReal F] in
 lemma unipotent_mul_diag_image_finite :
     (unipotent_mul_diag_image r α hα).Finite := by
   apply (Set.BijOn.finite_iff_finite
-    (bijOn_unipotent_mul_diagU1_U1diagU1 r {v} α hα (Finset.mem_singleton.mpr rfl))).mpr
-  unfold U1diagU1
+    (bijOn_leftCoset_doubleCoset r {v} α hα (Finset.mem_singleton.mpr rfl))).mpr
+  unfold doubleCoset
   exact (QuotientGroup.mk_image_finite_of_compact_of_open
     (Internal.U1_compact r {v}) (Internal.U1_open r {v}))
 
@@ -585,18 +585,18 @@ set_option maxHeartbeats 800000 in
 -- elevated: T-coset BijOn unfolds the P¹(kᵥ)-indexed decomposition with case splits.
 set_option linter.flexible false in
 omit [IsTotallyReal F] [IsQuaternionAlgebra F D] in
-private theorem bijOn_T_cosets_U1diagU1
+private theorem bijOn_T_cosets_doubleCoset
     (hv : v ∉ S) :
     (HeckeOperator.GoodPrime.T_cosets_image (r := r) v).BijOn
       QuotientGroup.mk
-        (U1diagU1 r S
+        (doubleCoset r S
           (HeckeOperator.GoodPrime.uniformizerInt (F := F) v)
           (HeckeOperator.GoodPrime.uniformizerInt_ne_zero (F := F) v)) := by
   -- Ported from the merged `polyproof/FLT` proof of the good-prime T-side bijection.
   let π : v.adicCompletionIntegers F := HeckeOperator.GoodPrime.uniformizerInt (F := F) v
   let hπ : π ≠ 0 := HeckeOperator.GoodPrime.uniformizerInt_ne_zero (F := F) v
   change (HeckeOperator.GoodPrime.T_cosets_image (r := r) v).BijOn QuotientGroup.mk
-      (U1diagU1 r S π hπ)
+      (doubleCoset r S π hπ)
   refine ⟨?_, ?_, ?_⟩
   · rintro _ ⟨t, _, rfl⟩
     cases t with
@@ -844,10 +844,10 @@ private lemma T_comm_of_ne {v w : HeightOneSpectrum (𝓞 F)} (hv : v ∉ S) (hw
       (hcomm := by
         refine ⟨HeckeOperator.GoodPrime.T_cosets_image (r := r) v,
           HeckeOperator.GoodPrime.T_cosets_image (r := r) w, ?_, ?_, ?_⟩
-        · simpa [HeckeOperator.GoodPrime.T_cosets_image, U1diagU1, U1, diag] using
-            (bijOn_T_cosets_U1diagU1 (r := r) (S := S) (v := v) hv)
-        · simpa [HeckeOperator.GoodPrime.T_cosets_image, U1diagU1, U1, diag] using
-            (bijOn_T_cosets_U1diagU1 (r := r) (S := S) (v := w) hw)
+        · simpa [HeckeOperator.GoodPrime.T_cosets_image, doubleCoset, U1, diag] using
+            (bijOn_T_cosets_doubleCoset (r := r) (S := S) (v := v) hv)
+        · simpa [HeckeOperator.GoodPrime.T_cosets_image, doubleCoset, U1, diag] using
+            (bijOn_T_cosets_doubleCoset (r := r) (S := S) (v := w) hw)
         · intro a ha b hb
           exact HeckeOperator.GoodPrime.goodPrimeRep_commute_of_ne (r := r) hvw a ha b hb))
 
@@ -909,7 +909,7 @@ noncomputable instance :
 omit [IsTotallyReal F] in
 lemma U_apply (a : WeightTwoAutomorphicFormOfLevel (U1 r S) R) :
     ((U r S R α hα) a).1 =
-    ∑ᶠ (gᵢ : (D ⊗[F] FiniteAdeleRing (𝓞 F) F)ˣ) (_ : gᵢ ∈ Quotient.out '' (U1diagU1 r S α hα)),
+    ∑ᶠ (gᵢ : (D ⊗[F] FiniteAdeleRing (𝓞 F) F)ˣ) (_ : gᵢ ∈ Quotient.out '' (doubleCoset r S α hα)),
       gᵢ • a.1 :=
   rfl
 
@@ -920,7 +920,7 @@ private lemma U_apply_eq_finsum_unipotent_mul_diag_image (hv : v ∈ S)
     ((U r S R α hα) a).1 =
     ∑ᶠ (g : (D ⊗[F] FiniteAdeleRing (𝓞 F) F)ˣ) (_ : g ∈ unipotent_mul_diag_image r α hα),
       g • a.1 :=
-  (eq_finsum_quotient_out_of_bijOn' a (bijOn_unipotent_mul_diagU1_U1diagU1 r S α hα hv)) ▸
+  (eq_finsum_quotient_out_of_bijOn' a (bijOn_leftCoset_doubleCoset r S α hα hv)) ▸
     U_apply r S R α hα a
 
 /-- A "raw lift" version of `unipotent_mul_diag`: takes an arbitrary `t : 𝓞_v` instead of
@@ -1133,10 +1133,10 @@ private lemma U_comm_of_ne {v w : HeightOneSpectrum (𝓞 F)} (hv : v ∈ S) (hw
         (Internal.U1_compact r S) (Internal.U1_open r S))
       (hcomm := by
         refine ⟨unipotent_mul_diag_image r α hα, unipotent_mul_diag_image r β hβ, ?_, ?_, ?_⟩
-        · simpa [unipotent_mul_diag_image, U1diagU1, U1, diag] using
-            (bijOn_unipotent_mul_diagU1_U1diagU1 (r := r) (S := S) (α := α) (hα := hα) hv)
-        · simpa [unipotent_mul_diag_image, U1diagU1, U1, diag] using
-            (bijOn_unipotent_mul_diagU1_U1diagU1 (r := r) (S := S) (α := β) (hα := hβ) hw)
+        · simpa [unipotent_mul_diag_image, doubleCoset, U1, diag] using
+            (bijOn_leftCoset_doubleCoset (r := r) (S := S) (α := α) (hα := hα) hv)
+        · simpa [unipotent_mul_diag_image, doubleCoset, U1, diag] using
+            (bijOn_leftCoset_doubleCoset (r := r) (S := S) (α := β) (hα := hβ) hw)
         · intro a ha b hb
           exact unipotent_mul_diag_commute_of_ne (r := r) hvw hα hβ a ha b hb))
 
@@ -1167,10 +1167,10 @@ private lemma T_comm_U_of_ne {v w : HeightOneSpectrum (𝓞 F)} (hv : v ∉ S) (
       (hcomm := by
         refine ⟨HeckeOperator.GoodPrime.T_cosets_image (r := r) v,
           unipotent_mul_diag_image r β hβ, ?_, ?_, ?_⟩
-        · simpa [HeckeOperator.GoodPrime.T_cosets_image, U1diagU1, U1, diag] using
-            (bijOn_T_cosets_U1diagU1 (r := r) (S := S) (v := v) hv)
-        · simpa [unipotent_mul_diag_image, U1diagU1, U1, diag] using
-            (bijOn_unipotent_mul_diagU1_U1diagU1 (r := r) (S := S) (α := β) (hα := hβ) hw)
+        · simpa [HeckeOperator.GoodPrime.T_cosets_image, doubleCoset, U1, diag] using
+            (bijOn_T_cosets_doubleCoset (r := r) (S := S) (v := v) hv)
+        · simpa [unipotent_mul_diag_image, doubleCoset, U1, diag] using
+            (bijOn_leftCoset_doubleCoset (r := r) (S := S) (α := β) (hα := hβ) hw)
         · intro a ha b hb
           exact goodPrimeRep_commute_with_unipotent_of_ne (r := r) hvw a ha hβ b hb))
 

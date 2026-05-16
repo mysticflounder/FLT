@@ -273,30 +273,32 @@ open U1
 section CosetDecomposition
 
 variable (v) in
-/-- The double coset space `U1 diag U1` as a set of left cosets. -/
-noncomputable def U1diagU1 :
+/-- The double coset space `U₁ · diag · U₁` as a set of left cosets. -/
+noncomputable def doubleCoset :
     Set ((GL (Fin 2) (adicCompletion F v)) ⧸ (U1 v)) :=
   (QuotientGroup.mk '' ((U1 v) * {diag α hα}))
 
 variable (v) in
-/-- For each `t ∈ O_v / αO_v`, the left coset `unipotent_mul_diag U1`
-for a lift of t to `O_v`. -/
-noncomputable def unipotent_mul_diagU1
+/-- For each `t ∈ O_v / αO_v`, the left coset `unipotent_mul_diag · U₁`
+for a lift of `t` to `O_v`. -/
+noncomputable def leftCoset
     (t : ↑(adicCompletionIntegers F v) ⧸ (Ideal.span {α})) :
     ((GL (Fin 2) (adicCompletion F v)) ⧸ ↑(U1 v)) :=
   QuotientGroup.mk (unipotent_mul_diag α hα (Quotient.out t : adicCompletionIntegers F v))
 
-/-- `unipotent_mul_diagU1` is contained in `U1diagU1` for all t. -/
-lemma mapsTo_unipotent_mul_diagU1_U1diagU1 :
-    Set.MapsTo (unipotent_mul_diagU1 v α hα) ⊤ (U1diagU1 v α hα) :=
+namespace Internal
+
+/-- `leftCoset` is contained in `doubleCoset` for all `t`. -/
+lemma mapsTo_leftCoset_doubleCoset :
+    Set.MapsTo (leftCoset v α hα) ⊤ (doubleCoset v α hα) :=
   (fun t _ => Set.mem_image_of_mem QuotientGroup.mk
     (Set.mul_mem_mul (unipotent_mem_U1 (Quotient.out t)) rfl))
 
-/-- Distinct t give distinct `unipotent_mul_diagU1`, i.e. we have a disjoint union. -/
-lemma injOn_unipotent_mul_diagU1 :
-    Set.InjOn (unipotent_mul_diagU1 v α hα) ⊤ := by
+/-- Distinct `t` give distinct `leftCoset`, i.e. we have a disjoint union. -/
+lemma injOn_leftCoset :
+    Set.InjOn (leftCoset v α hα) ⊤ := by
   intro t₁ h₁ t₂ h₂ h
-  /- If `unipotent_mul_diagU1 t₁ = unipotent_mul_diagU1 t₂`,
+  /- If `leftCoset t₁ = leftCoset t₂`,
   then `(unipotent_mul_diag t₁)⁻¹ * (unipotent_mul_diag t₂)` is in `U1 v`.
   Note `unipotent_mul_diag_inv_mul_unipotent_mul_diag` tells us that
   `(unipotent_mul_diag t₁)⁻¹ * (unipotent_mul_diag t₂)` is `unipotent`. -/
@@ -315,11 +317,11 @@ lemma injOn_unipotent_mul_diagU1 :
   apply (Subtype.coe_inj).mp; push_cast
   ring_nf; rw[mul_inv_cancel₀ ((Subtype.coe_ne_coe).mpr hα), one_mul, one_mul]
 
-/-- Each coset in `U1diagU1` is of the form `unipotent_mul_diagU1` for some `t ∈ O_v`. -/
-lemma surjOn_unipotent_mul_diagU1_U1diagU1 :
-    Set.SurjOn (unipotent_mul_diagU1 v α hα) ⊤ (U1diagU1 v α hα) := by
+/-- Each coset in `doubleCoset` is of the form `leftCoset` for some `t ∈ O_v`. -/
+lemma surjOn_leftCoset_doubleCoset :
+    Set.SurjOn (leftCoset v α hα) ⊤ (doubleCoset v α hα) := by
   rintro _ ⟨_, ⟨x, hx, _, rfl, rfl⟩, rfl⟩
-  /- Each element of `U1diagU1` can be written as `x * diag`,
+  /- Each element of `doubleCoset` can be written as `x * diag`,
   where `x = !![a,b;c,d]` is viewed as a matrix over `O_v`. -/
   let a : (adicCompletionIntegers F v) := ⟨_, apply_mem_integer hx 0 0⟩
   let b : (adicCompletionIntegers F v) := ⟨_, apply_mem_integer hx 0 1⟩
@@ -341,7 +343,7 @@ lemma surjOn_unipotent_mul_diagU1_U1diagU1 :
     rw[mul_assoc, hq]; ring_nf; simp
   /- The rest of the proof is devoted to showing that this t works.
   This means showing that `unipotent_mul_diag⁻¹ * x * diag` is in U. -/
-  simp only [unipotent_mul_diagU1, Set.top_eq_univ, Set.mem_univ, true_and]
+  simp only [leftCoset, Set.top_eq_univ, Set.mem_univ, true_and]
   apply QuotientGroup.eq.mpr
   unfold unipotent_mul_diag; rw[mul_inv_rev, ← mul_assoc, mul_assoc _ _ x]
   /- But `unipotent_mul_diag⁻¹ * x * diag = diag⁻¹ * (unipotent⁻¹ * x) * diag`,
@@ -357,14 +359,16 @@ lemma surjOn_unipotent_mul_diagU1_U1diagU1 :
     Fin.sum_univ_two, one_mul]
   exact_mod_cast ht
 
+end Internal
+
 variable (v) in
-/-- The double coset space `U1diagU1` is the disjoint union of
-`unipotent_mul_diagU1` as t ranges over `O_v / αO_v`. -/
-theorem bijOn_unipotent_mul_diagU1_U1diagU1 :
-    Set.BijOn (unipotent_mul_diagU1 v α hα) ⊤ (U1diagU1 v α hα) :=
-  ⟨mapsTo_unipotent_mul_diagU1_U1diagU1 α hα,
-    injOn_unipotent_mul_diagU1 α hα,
-    surjOn_unipotent_mul_diagU1_U1diagU1 α hα⟩
+/-- The double coset space `doubleCoset` is the disjoint union of
+`leftCoset` as `t` ranges over `O_v / αO_v`. -/
+theorem bijOn_leftCoset_doubleCoset :
+    Set.BijOn (leftCoset v α hα) ⊤ (doubleCoset v α hα) :=
+  ⟨Internal.mapsTo_leftCoset_doubleCoset α hα,
+    Internal.injOn_leftCoset α hα,
+    Internal.surjOn_leftCoset_doubleCoset α hα⟩
 
 end CosetDecomposition
 
