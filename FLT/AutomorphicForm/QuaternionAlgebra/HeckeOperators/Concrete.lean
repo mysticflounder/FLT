@@ -192,7 +192,6 @@ noncomputable instance : DecidableEq (HeightOneSpectrum (𝓞 F)) :=
 namespace GoodPrime
 
 /-- The chosen local uniformizer in the integer ring of the completion. -/
-@[nolint docBlame]
 noncomputable abbrev uniformizerInt (v : HeightOneSpectrum (𝓞 F)) : v.adicCompletionIntegers F :=
   Local.uniformizerInt (F := F) v
 
@@ -202,7 +201,6 @@ private lemma uniformizerInt_ne_zero (v : HeightOneSpectrum (𝓞 F)) :
   Local.Internal.uniformizerInt_ne_zero (F := F) v
 
 /-- The representative for the `swap * diag` good-prime coset. -/
-@[nolint docBlame]
 private noncomputable def swap_mul_diag (v : HeightOneSpectrum (𝓞 F)) :
     (D ⊗[F] (FiniteAdeleRing (𝓞 F) F))ˣ :=
   Units.mapEquiv r.symm.toMulEquiv
@@ -213,7 +211,6 @@ private noncomputable def swap_mul_diag (v : HeightOneSpectrum (𝓞 F)) :
             (uniformizerInt_ne_zero (F := F) v))))
 
 /-- The representative for the unipotent good-prime coset. -/
-@[nolint docBlame]
 noncomputable def unipotent_mul_diag (v : HeightOneSpectrum (𝓞 F))
     (α : v.adicCompletionIntegers F) (hα : α ≠ 0)
     (t : ↑(adicCompletionIntegers F v) ⧸ Ideal.span {α}) :
@@ -224,7 +221,6 @@ noncomputable def unipotent_mul_diag (v : HeightOneSpectrum (𝓞 F))
         (Local.GL2.unipotent_mul_diag α hα (Quotient.out t : adicCompletionIntegers F v))))
 
 /-- The option-indexed family of good-prime representatives. -/
-@[nolint docBlame]
 private noncomputable def goodPrimeRep (v : HeightOneSpectrum (𝓞 F)) :
     Option (↑(adicCompletionIntegers F v) ⧸ Ideal.span {uniformizerInt (F := F) v}) →
       (D ⊗[F] (FiniteAdeleRing (𝓞 F) F))ˣ
@@ -233,7 +229,6 @@ private noncomputable def goodPrimeRep (v : HeightOneSpectrum (𝓞 F)) :
     (uniformizerInt_ne_zero (F := F) v) t
 
 /-- The image of the good-prime representative family. -/
-@[nolint docBlame]
 private noncomputable def goodPrimeRep_image (v : HeightOneSpectrum (𝓞 F)) :
     Set (D ⊗[F] (FiniteAdeleRing (𝓞 F) F))ˣ :=
   (goodPrimeRep (r := r) v) '' ⊤
@@ -316,8 +311,6 @@ private lemma goodPrimeRep_inj (v : HeightOneSpectrum (𝓞 F)) :
             simpa [goodPrimeRep, unipotent_mul_diag] using hxy
           exact congrArg some ((unipotent_mul_diag_inj (r := r) v) trivial trivial h')
 
--- Adapted from the merged `polyproof/FLT` PR #38: disjoint support at distinct places
--- is enough to force commutation of the good-prime representatives.
 omit [IsTotallyReal F] [IsQuaternionAlgebra F D] in
 private lemma goodPrimeRep_commute_of_ne {v w : HeightOneSpectrum (𝓞 F)} (hvw : v ≠ w)
     (a : (D ⊗[F] (FiniteAdeleRing (𝓞 F) F))ˣ) (ha : a ∈ goodPrimeRep_image (r := r) v)
@@ -386,10 +379,8 @@ noncomputable def doubleCoset :
     Set ((D ⊗[F] (FiniteAdeleRing (𝓞 F) F))ˣ ⧸ (U1 r S)) :=
   QuotientGroup.mk '' ((U1 r S) * {diag r α hα})
 
--- Adapted from `polyproof/FLT`, PR #38. The proof is now fully explicit about the
--- local-to-global rigidification bridge.
 set_option maxHeartbeats 800000 in
--- elevated: BijOn proof unfolds the rigidification push-through across all three goals.
+-- The BijOn proof unfolds the rigidification push-through across all three goals.
 omit [IsTotallyReal F] [IsQuaternionAlgebra F D] in
 theorem bijOn_leftCoset_doubleCoset (hv : v ∈ S) :
     (unipotent_mul_diag_image r α hα).BijOn QuotientGroup.mk (doubleCoset r S α hα) := by
@@ -582,7 +573,7 @@ lemma unipotent_mul_diag_image_finite :
     (Internal.U1_compact r {v}) (Internal.U1_open r {v}))
 
 set_option maxHeartbeats 800000 in
--- elevated: T-coset BijOn unfolds the P¹(kᵥ)-indexed decomposition with case splits.
+-- The T-coset BijOn unfolds the P¹(kᵥ)-indexed decomposition with case splits.
 set_option linter.flexible false in
 omit [IsTotallyReal F] [IsQuaternionAlgebra F D] in
 private theorem bijOn_T_cosets_doubleCoset
@@ -858,7 +849,8 @@ lemma quot_top_finite (r : Rigidification F D) (α : v.adicCompletionIntegers F)
   apply unipotent_mul_diag_image_finite
 
 omit [IsTotallyReal F] [IsQuaternionAlgebra F D] in
-private lemma goodPrimeRep_commute_with_unipotent_of_ne {v w : HeightOneSpectrum (𝓞 F)} (hvw : v ≠ w)
+private lemma goodPrimeRep_commute_with_unipotent_of_ne
+    {v w : HeightOneSpectrum (𝓞 F)} (hvw : v ≠ w)
     (a : (D ⊗[F] (FiniteAdeleRing (𝓞 F) F))ˣ)
     (ha : a ∈ HeckeOperator.GoodPrime.goodPrimeRep_image (r := r) v)
     {β : w.adicCompletionIntegers F} (hβ : β ≠ 0)
@@ -951,7 +943,7 @@ private lemma unipotent_mul_diag_lift_mul {β : v.adicCompletionIntegers F} (hβ
   exact Local.GL2.Internal.unipotent_mul_diag_mul_unipotent_mul_diag α hα hβ s t
 
 set_option maxHeartbeats 400000 in
--- elevated: lift action proof rewrites through `mulSingle_mul` + `map_mul` chain.
+-- The proof rewrites a `smul` equality through `mulSingle_mul` and `map_mul`.
 omit [IsTotallyReal F] in
 /-- `U1`-invariance of `unipotent_mul_diag_lift` action: if `t₁ - t₂ ∈ (γ)`, then
 `unipotent_mul_diag_lift γ t₁ • a = unipotent_mul_diag_lift γ t₂ • a` for any

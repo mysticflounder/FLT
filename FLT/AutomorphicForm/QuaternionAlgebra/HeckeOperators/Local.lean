@@ -80,7 +80,6 @@ lemma conjBy_diag {a b c d : adicCompletion F v} :
   ring_nf; rw[mul_inv_cancel₀ ((Subtype.coe_ne_coe).mpr hα), one_mul]
 
 /-- The chosen uniformizer of the completion at `v`. -/
-@[nolint docBlame]
 noncomputable abbrev uniformizer (v : HeightOneSpectrum (𝓞 F)) : adicCompletion F v :=
   IsDedekindDomain.HeightOneSpectrum.adicCompletionUniformizer (K := F) v
 
@@ -629,7 +628,8 @@ private lemma quotient_diff_mul_mem_span {R : Type*} [CommRing R] {π b d t₀ :
   simpa [sub_eq_add_neg, mul_add, add_mul, mul_assoc, mul_comm, mul_left_comm, h_inv] using hqd
 
 set_option maxHeartbeats 3200000 in
--- elevated: matrix decomposition + repeated `simpa` on `localFullLevel` membership.
+-- The SurjOn proof decomposes a generic `x ∈ localFullLevel` into 2x2 entries
+-- and replays the membership/finiteness witness for each entry separately.
 set_option linter.unnecessarySimpa false in
 lemma surjOn_localFullLevelDiagLocalFullLevelRep_localFullLevelDiagLocalFullLevel :
     Set.SurjOn (localFullLevelDiagLocalFullLevelRep (v := v)) Set.univ

@@ -402,9 +402,6 @@ noncomputable def GL2.restrictedProduct :
       [(GL (Fin 2) (v.adicCompletion F)), (M2.localFullLevel v).units] :=
   ContinuousMulEquiv.restrictedProductMatrixUnits (NumberField.isOpenAdicCompletionIntegers F)
 
--- Adapted from `polyproof/FLT`, PR #38, to expose the restricted-product evaluation
--- lemmas needed by the Hecke operator proofs.
-
 /-- The "value" form of the bridging computation: at every entry `(i,j)` and place `w`,
 the matrix entry of `GL2.toAdicCompletion w (rp.symm x)` equals the corresponding
 entry of `(x w).val`. -/
