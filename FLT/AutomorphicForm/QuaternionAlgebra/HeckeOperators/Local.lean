@@ -84,7 +84,7 @@ lemma conjBy_diag {a b c d : adicCompletion F v} :
 noncomputable abbrev uniformizer (v : HeightOneSpectrum (𝓞 F)) : adicCompletion F v :=
   IsDedekindDomain.HeightOneSpectrum.adicCompletionUniformizer (K := F) v
 
-lemma uniformizer_spec :
+private lemma uniformizer_spec :
     Valued.v (uniformizer (F := F) v) = Multiplicative.ofAdd (-1 : ℤ) := by
   simpa [uniformizer] using
     IsDedekindDomain.HeightOneSpectrum.adicCompletionUniformizer_spec (K := F) v
@@ -102,7 +102,7 @@ lemma swap_mem_localFullLevel :
   · simp [Matrix.GeneralLinearGroup.swap, Matrix.swap]
 
 set_option linter.flexible false in
-lemma unipotent_mem_localFullLevel (t : v.adicCompletionIntegers F) :
+private lemma unipotent_mem_localFullLevel (t : v.adicCompletionIntegers F) :
     Matrix.GeneralLinearGroup.GL2.unipotent (t : adicCompletion F v) ∈ GL2.localFullLevel v := by
   rw [GL2.mem_localFullLevel_iff_v_le_one_and_v_det_eq_one]
   constructor
@@ -369,7 +369,7 @@ variable (v) in
 noncomputable abbrev uniformizerInt (v : HeightOneSpectrum (𝓞 F)) : v.adicCompletionIntegers F :=
   IsDedekindDomain.HeightOneSpectrum.adicCompletionIntegersUniformizer (K := F) v
 
-lemma uniformizerInt_spec (v : HeightOneSpectrum (𝓞 F)) :
+private lemma uniformizerInt_spec (v : HeightOneSpectrum (𝓞 F)) :
     Valued.v (uniformizerInt (F := F) v).1 = Multiplicative.ofAdd (-1 : ℤ) := by
   simpa [uniformizerInt, IsDedekindDomain.HeightOneSpectrum.adicCompletionIntegersUniformizer,
     IsDedekindDomain.HeightOneSpectrum.valuation_of_algebraMap] using
@@ -411,14 +411,14 @@ noncomputable def localFullLevelDiagLocalFullLevelRep :
 | none => swap_mul_diagLocalFullLevel (v := v)
 | some t => unipotent_mul_diagLocalFullLevel (v := v) t
 
-lemma mapsTo_unipotent_mul_diagLocalFullLevel_localFullLevelDiagLocalFullLevel :
+private lemma mapsTo_unipotent_mul_diagLocalFullLevel_localFullLevelDiagLocalFullLevel :
     Set.MapsTo (unipotent_mul_diagLocalFullLevel (v := v)) ⊤
       (localFullLevelDiagLocalFullLevel (v := v)) := by
   intro t ht
   exact Set.mem_image_of_mem QuotientGroup.mk
     (Set.mul_mem_mul (unipotent_mem_localFullLevel (v := v) (Quotient.out t)) rfl)
 
-lemma mapsTo_localFullLevelDiagLocalFullLevelRep_localFullLevelDiagLocalFullLevel :
+private lemma mapsTo_localFullLevelDiagLocalFullLevelRep_localFullLevelDiagLocalFullLevel :
     Set.MapsTo (localFullLevelDiagLocalFullLevelRep (v := v)) Set.univ
       (localFullLevelDiagLocalFullLevel (v := v)) := by
   intro t ht
@@ -432,30 +432,30 @@ lemma mapsTo_localFullLevelDiagLocalFullLevelRep_localFullLevelDiagLocalFullLeve
       exact Set.mem_image_of_mem QuotientGroup.mk
         (Set.mul_mem_mul (unipotent_mem_localFullLevel (v := v) (Quotient.out t)) rfl)
 
-lemma upper_unipotent_mul_matrix {K : Type*} [CommRing K] (a b c d t : K) :
+private lemma upper_unipotent_mul_matrix {K : Type*} [CommRing K] (a b c d t : K) :
     (!![1, -t; 0, 1] : Matrix (Fin 2) (Fin 2) K) * !![a, b; c, d] =
       !![a - t * c, b - t * d; c, d] := by
   ext i j; fin_cases i <;> fin_cases j <;>
     simp [Matrix.mul_apply, mul_comm] <;>
     ring_nf
 
-lemma swap_mul_matrix {K : Type*} [CommRing K] (a b c d : K) :
+private lemma swap_mul_matrix {K : Type*} [CommRing K] (a b c d : K) :
     (!![(0 : K), 1; 1, 0] : Matrix (Fin 2) (Fin 2) K) * !![a, b; c, d] =
       !![c, d; a, b] := by
   ext i j; fin_cases i <;> fin_cases j <;>
     simp [Matrix.mul_apply]
 
-lemma unipotent_det_eq_one {K : Type*} [CommRing K] (t : K) :
+private lemma unipotent_det_eq_one {K : Type*} [CommRing K] (t : K) :
     Matrix.GeneralLinearGroup.det (unipotent t) = 1 := by
   apply Units.ext
   norm_num [unipotent_def, Matrix.det_fin_two]
 
-lemma swap_det_eq_neg_one {K : Type*} [CommRing K] :
+private lemma swap_det_eq_neg_one {K : Type*} [CommRing K] :
     Matrix.GeneralLinearGroup.det (Matrix.GeneralLinearGroup.swap K (0 : Fin 2) 1) = -1 := by
   apply Units.ext
   simp [Matrix.GeneralLinearGroup.swap, Matrix.swap]
 
-lemma uniformizerInt_not_isUnit (v : HeightOneSpectrum (𝓞 F)) :
+private lemma uniformizerInt_not_isUnit (v : HeightOneSpectrum (𝓞 F)) :
     ¬ IsUnit (uniformizerInt (F := F) v) := by
   intro hunit
   have hval :
@@ -472,7 +472,7 @@ lemma uniformizerInt_not_isUnit (v : HeightOneSpectrum (𝓞 F)) :
       WithZero.coe_lt_coe.mpr (Multiplicative.ofAdd_lt.mpr (by norm_num : (-1 : ℤ) < 0))
   exact hneq (hspec.symm.trans hval)
 
-lemma uniformizerInt_inv_not_mem (v : HeightOneSpectrum (𝓞 F)) :
+private lemma uniformizerInt_inv_not_mem (v : HeightOneSpectrum (𝓞 F)) :
     (↑(uniformizerInt (F := F) v) : adicCompletion F v)⁻¹ ∉ adicCompletionIntegers F v := by
   intro hmem
   have hunit : IsUnit (uniformizerInt (F := F) v) := by
@@ -487,7 +487,7 @@ lemma uniformizerInt_inv_not_mem (v : HeightOneSpectrum (𝓞 F)) :
   exact uniformizerInt_not_isUnit (F := F) v hunit
 
 set_option linter.flexible false in
-lemma injOn_unipotent_mul_diagLocalFullLevel :
+private lemma injOn_unipotent_mul_diagLocalFullLevel :
     Set.InjOn (unipotent_mul_diagLocalFullLevel (v := v)) ⊤ := by
   intro t₁ h₁ t₂ h₂ h
   have hmem : (unipotent_mul_diag (uniformizerInt (F := F) v)
@@ -519,7 +519,7 @@ lemma injOn_unipotent_mul_diagLocalFullLevel :
   simp [add_comm]
   exact mul_comm _ _
 
-lemma swap_mul_diagLocalFullLevel_ne_unipotent_mul_diagLocalFullLevel
+private lemma swap_mul_diagLocalFullLevel_ne_unipotent_mul_diagLocalFullLevel
     (t : ↑(adicCompletionIntegers F v) ⧸ Ideal.span {uniformizerInt (F := F) v}) :
     swap_mul_diagLocalFullLevel (v := v) ≠ unipotent_mul_diagLocalFullLevel (v := v) t := by
   intro h
@@ -601,7 +601,7 @@ lemma injOn_localFullLevelDiagLocalFullLevelRep :
           exact injOn_unipotent_mul_diagLocalFullLevel (v := v) trivial trivial h
 
 set_option linter.unnecessarySimpa false in
-lemma quotient_diff_mul_mem_span {R : Type*} [CommRing R] {π b d t₀ : R} [Invertible d]
+private lemma quotient_diff_mul_mem_span {R : Type*} [CommRing R] {π b d t₀ : R} [Invertible d]
     (hq : t₀ - (⅟d : R) * b ∈ Ideal.span {π}) :
     b + -t₀ * d ∈ Ideal.span {π} := by
   have hq' : (⅟d : R) * b - t₀ ∈ Ideal.span {π} := by

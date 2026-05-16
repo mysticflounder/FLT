@@ -89,7 +89,7 @@ theorem M2.localFullLevel.isCompact (v : HeightOneSpectrum (𝓞 F)) :
 -- the clever way to prove this is a theorem of the form "if A is an open submonoid of R
 -- then Aˣ is an open subgroup of Rˣ"
 set_option linter.unnecessarySimpa false in
-theorem GL2.localFullLevel_eq_units (v : HeightOneSpectrum (𝓞 F)) :
+private theorem GL2.localFullLevel_eq_units (v : HeightOneSpectrum (𝓞 F)) :
     GL2.localFullLevel v = (M2.localFullLevel v).toSubmonoid.units := by
   ext x
   constructor
@@ -408,7 +408,7 @@ noncomputable def GL2.restrictedProduct :
 /-- The "value" form of the bridging computation: at every entry `(i,j)` and place `w`,
 the matrix entry of `GL2.toAdicCompletion w (rp.symm x)` equals the corresponding
 entry of `(x w).val`. -/
-lemma GL2.toAdicCompletion_restrictedProduct_symm_val_apply
+private lemma GL2.toAdicCompletion_restrictedProduct_symm_val_apply
     (w : HeightOneSpectrum (𝓞 F))
     (x : Πʳ (v : HeightOneSpectrum (𝓞 F)),
       [(GL (Fin 2) (v.adicCompletion F)), (M2.localFullLevel v).units])
@@ -421,7 +421,7 @@ lemma GL2.toAdicCompletion_restrictedProduct_symm_val_apply
 applying `GL2.toAdicCompletion w` to the inverse image of `x` under the restricted-
 product equivalence yields `x w` directly. Useful for transporting global statements
 about `GL₂(𝔸_F^∞)` to local statements at each place. -/
-lemma GL2.toAdicCompletion_restrictedProduct_symm_apply
+private lemma GL2.toAdicCompletion_restrictedProduct_symm_apply
     (w : HeightOneSpectrum (𝓞 F))
     (x : Πʳ (v : HeightOneSpectrum (𝓞 F)),
       [(GL (Fin 2) (v.adicCompletion F)), (M2.localFullLevel v).units]) :

@@ -190,13 +190,13 @@ noncomputable abbrev uniformizerInt (v : HeightOneSpectrum (𝓞 F)) : v.adicCom
   Local.uniformizerInt (F := F) v
 
 omit [IsTotallyReal F] in
-lemma uniformizerInt_ne_zero (v : HeightOneSpectrum (𝓞 F)) :
+private lemma uniformizerInt_ne_zero (v : HeightOneSpectrum (𝓞 F)) :
     uniformizerInt (F := F) v ≠ 0 :=
   Local.uniformizerInt_ne_zero (F := F) v
 
 /-- The representative for the `swap * diag` good-prime coset. -/
 @[nolint docBlame]
-noncomputable def swap_mul_diag (v : HeightOneSpectrum (𝓞 F)) :
+private noncomputable def swap_mul_diag (v : HeightOneSpectrum (𝓞 F)) :
     (D ⊗[F] (FiniteAdeleRing (𝓞 F) F))ˣ :=
   Units.mapEquiv r.symm.toMulEquiv
     (FiniteAdeleRing.GL2.restrictedProduct.symm
@@ -218,7 +218,7 @@ noncomputable def unipotent_mul_diag (v : HeightOneSpectrum (𝓞 F))
 
 /-- The option-indexed family of good-prime representatives. -/
 @[nolint docBlame]
-noncomputable def goodPrimeRep (v : HeightOneSpectrum (𝓞 F)) :
+private noncomputable def goodPrimeRep (v : HeightOneSpectrum (𝓞 F)) :
     Option (↑(adicCompletionIntegers F v) ⧸ Ideal.span {uniformizerInt (F := F) v}) →
       (D ⊗[F] (FiniteAdeleRing (𝓞 F) F))ˣ
 | none => swap_mul_diag (r := r) v
@@ -227,19 +227,19 @@ noncomputable def goodPrimeRep (v : HeightOneSpectrum (𝓞 F)) :
 
 /-- The image of the good-prime representative family. -/
 @[nolint docBlame]
-noncomputable def goodPrimeRep_image (v : HeightOneSpectrum (𝓞 F)) :
+private noncomputable def goodPrimeRep_image (v : HeightOneSpectrum (𝓞 F)) :
     Set (D ⊗[F] (FiniteAdeleRing (𝓞 F) F))ˣ :=
   (goodPrimeRep (r := r) v) '' ⊤
 
 /-- Blueprint-facing name for the good-prime coset family used in the `T_v` decomposition.
 This is the image of the option-indexed representative family above. -/
-noncomputable def T_cosets_image (v : HeightOneSpectrum (𝓞 F)) :
+private noncomputable def T_cosets_image (v : HeightOneSpectrum (𝓞 F)) :
     Set (D ⊗[F] (FiniteAdeleRing (𝓞 F) F))ˣ :=
   goodPrimeRep_image (r := r) v
 
 set_option linter.flexible false in
 omit [IsTotallyReal F] [IsQuaternionAlgebra F D] in
-lemma unipotent_mul_diag_inj (v : HeightOneSpectrum (𝓞 F)) :
+private lemma unipotent_mul_diag_inj (v : HeightOneSpectrum (𝓞 F)) :
     Set.InjOn (unipotent_mul_diag (r := r) v (uniformizerInt (F := F) v)
       (uniformizerInt_ne_zero (F := F) v)) ⊤ := by
   intro t₁ h₁ t₂ h₂ h
@@ -252,7 +252,7 @@ lemma unipotent_mul_diag_inj (v : HeightOneSpectrum (𝓞 F)) :
 
 set_option linter.flexible false in
 omit [IsTotallyReal F] [IsQuaternionAlgebra F D] in
-lemma goodPrimeRep_inj (v : HeightOneSpectrum (𝓞 F)) :
+private lemma goodPrimeRep_inj (v : HeightOneSpectrum (𝓞 F)) :
     Set.InjOn (goodPrimeRep (r := r) v) ⊤ := by
   intro x hx y hy hxy
   cases x with
@@ -312,7 +312,7 @@ lemma goodPrimeRep_inj (v : HeightOneSpectrum (𝓞 F)) :
 -- Adapted from the merged `polyproof/FLT` PR #38: disjoint support at distinct places
 -- is enough to force commutation of the good-prime representatives.
 omit [IsTotallyReal F] [IsQuaternionAlgebra F D] in
-lemma goodPrimeRep_commute_of_ne {v w : HeightOneSpectrum (𝓞 F)} (hvw : v ≠ w)
+private lemma goodPrimeRep_commute_of_ne {v w : HeightOneSpectrum (𝓞 F)} (hvw : v ≠ w)
     (a : (D ⊗[F] (FiniteAdeleRing (𝓞 F) F))ˣ) (ha : a ∈ goodPrimeRep_image (r := r) v)
     (b : (D ⊗[F] (FiniteAdeleRing (𝓞 F) F))ˣ) (hb : b ∈ goodPrimeRep_image (r := r) w) :
     a * b = b * a := by
@@ -577,7 +577,7 @@ set_option maxHeartbeats 800000 in
 -- elevated: T-coset BijOn unfolds the P¹(kᵥ)-indexed decomposition with case splits.
 set_option linter.flexible false in
 omit [IsTotallyReal F] [IsQuaternionAlgebra F D] in
-theorem bijOn_T_cosets_U1diagU1
+private theorem bijOn_T_cosets_U1diagU1
     (hv : v ∉ S) :
     (HeckeOperator.GoodPrime.T_cosets_image (r := r) v).BijOn
       QuotientGroup.mk
@@ -808,7 +808,7 @@ theorem bijOn_T_cosets_U1diagU1
           rfl
 
 omit [IsTotallyReal F] in
-lemma T_comm_of_ne {v w : HeightOneSpectrum (𝓞 F)} (hv : v ∉ S) (hw : w ∉ S)
+private lemma T_comm_of_ne {v w : HeightOneSpectrum (𝓞 F)} (hv : v ∉ S) (hw : w ∉ S)
     (hvw : v ≠ w) :
     HeckeOperator.T (F := F) (D := D) (S := S) r R v ∘ₗ
       HeckeOperator.T (F := F) (D := D) (S := S) r R w =
@@ -847,7 +847,7 @@ lemma quot_top_finite (r : Rigidification F D) (α : v.adicCompletionIntegers F)
   apply unipotent_mul_diag_image_finite
 
 omit [IsTotallyReal F] [IsQuaternionAlgebra F D] in
-lemma goodPrimeRep_commute_with_unipotent_of_ne {v w : HeightOneSpectrum (𝓞 F)} (hvw : v ≠ w)
+private lemma goodPrimeRep_commute_with_unipotent_of_ne {v w : HeightOneSpectrum (𝓞 F)} (hvw : v ≠ w)
     (a : (D ⊗[F] (FiniteAdeleRing (𝓞 F) F))ˣ)
     (ha : a ∈ HeckeOperator.GoodPrime.goodPrimeRep_image (r := r) v)
     {β : w.adicCompletionIntegers F} (hβ : β ≠ 0)
@@ -862,7 +862,7 @@ lemma goodPrimeRep_commute_with_unipotent_of_ne {v w : HeightOneSpectrum (𝓞 F
       (Units.mapEquiv r.symm.toMulEquiv).toMonoidHom).eq
 
 omit [IsTotallyReal F] [IsQuaternionAlgebra F D] in
-lemma unipotent_mul_diag_commute_of_ne {v w : HeightOneSpectrum (𝓞 F)} (hvw : v ≠ w)
+private lemma unipotent_mul_diag_commute_of_ne {v w : HeightOneSpectrum (𝓞 F)} (hvw : v ≠ w)
     {α : v.adicCompletionIntegers F} (hα : α ≠ 0)
     {β : w.adicCompletionIntegers F} (hβ : β ≠ 0)
     (a : (D ⊗[F] (FiniteAdeleRing (𝓞 F) F))ˣ) (ha : a ∈ unipotent_mul_diag_image r α hα)
@@ -903,7 +903,7 @@ lemma U_apply (a : WeightTwoAutomorphicFormOfLevel (U1 r S) R) :
 
 open AbstractHeckeOperator in
 omit [IsTotallyReal F] in
-lemma U_apply_eq_finsum_unipotent_mul_diag_image (hv : v ∈ S)
+private lemma U_apply_eq_finsum_unipotent_mul_diag_image (hv : v ∈ S)
     (a : WeightTwoAutomorphicFormOfLevel (U1 r S) R) :
     ((U r S R α hα) a).1 =
     ∑ᶠ (g : (D ⊗[F] FiniteAdeleRing (𝓞 F) F)ˣ) (_ : g ∈ unipotent_mul_diag_image r α hα),
@@ -913,7 +913,7 @@ lemma U_apply_eq_finsum_unipotent_mul_diag_image (hv : v ∈ S)
 
 /-- A "raw lift" version of `unipotent_mul_diag`: takes an arbitrary `t : 𝓞_v` instead of
 a coset class. This is useful for manipulating products via the local matrix formula. -/
-noncomputable def unipotent_mul_diag_lift (t : adicCompletionIntegers F v) :
+private noncomputable def unipotent_mul_diag_lift (t : adicCompletionIntegers F v) :
     (D ⊗[F] (FiniteAdeleRing (𝓞 F) F))ˣ :=
   Units.mapEquiv r.symm.toMulEquiv
     (FiniteAdeleRing.GL2.restrictedProduct.symm
@@ -921,7 +921,7 @@ noncomputable def unipotent_mul_diag_lift (t : adicCompletionIntegers F v) :
       (Local.GL2.unipotent_mul_diag α hα t)))
 
 omit [IsTotallyReal F] [IsQuaternionAlgebra F D] in
-lemma unipotent_mul_diag_eq_lift (t : ↑(adicCompletionIntegers F v) ⧸ (Ideal.span {α})) :
+private lemma unipotent_mul_diag_eq_lift (t : ↑(adicCompletionIntegers F v) ⧸ (Ideal.span {α})) :
     unipotent_mul_diag r α hα t = unipotent_mul_diag_lift r α hα (Quotient.out t) :=
   rfl
 
@@ -929,7 +929,7 @@ omit [IsTotallyReal F] [IsQuaternionAlgebra F D] in
 /-- The global multiplication formula for `unipotent_mul_diag_lift`: matches the local
 matrix product formula `!![α,s;0,1] * !![β,t;0,1] = !![αβ, α*t+s; 0,1]`, transported
 through the restricted product + rigidification pipeline. -/
-lemma unipotent_mul_diag_lift_mul {β : v.adicCompletionIntegers F} (hβ : β ≠ 0)
+private lemma unipotent_mul_diag_lift_mul {β : v.adicCompletionIntegers F} (hβ : β ≠ 0)
     (s t : adicCompletionIntegers F v) :
     unipotent_mul_diag_lift r α hα s * unipotent_mul_diag_lift r β hβ t =
     unipotent_mul_diag_lift r (α * β) (mul_ne_zero hα hβ)
@@ -944,7 +944,7 @@ omit [IsTotallyReal F] in
 /-- `U1`-invariance of `unipotent_mul_diag_lift` action: if `t₁ - t₂ ∈ (γ)`, then
 `unipotent_mul_diag_lift γ t₁ • a = unipotent_mul_diag_lift γ t₂ • a` for any
 `U1 r S`-fixed automorphic form `a`. -/
-lemma unipotent_mul_diag_lift_smul_eq {γ : v.adicCompletionIntegers F} (hγ : γ ≠ 0)
+private lemma unipotent_mul_diag_lift_smul_eq {γ : v.adicCompletionIntegers F} (hγ : γ ≠ 0)
     {t₁ t₂ : v.adicCompletionIntegers F}
     (h : t₁ - t₂ ∈ Ideal.span ({γ} : Set (v.adicCompletionIntegers F)))
     (a : WeightTwoAutomorphicFormOfLevel (U1 r S) R) :
@@ -1075,7 +1075,7 @@ by
 
 open AbstractHeckeOperator in
 omit [IsTotallyReal F] in
-lemma U_mul {v : HeightOneSpectrum (𝓞 F)} (hv : v ∈ S)
+private lemma U_mul {v : HeightOneSpectrum (𝓞 F)} (hv : v ∈ S)
     {α β : v.adicCompletionIntegers F} (hα : α ≠ 0) (hβ : β ≠ 0) :
     (U r S R α hα ∘ₗ U r S R β hβ) =
     U r S R (α * β) (hα.mul hβ) := by
@@ -1089,7 +1089,7 @@ lemma U_mul {v : HeightOneSpectrum (𝓞 F)} (hv : v ∈ S)
   simpa using U_mul_aux r S R hα hβ a
 
 omit [IsTotallyReal F] in
-lemma U_comm {v : HeightOneSpectrum (𝓞 F)} (hv : v ∈ S)
+private lemma U_comm {v : HeightOneSpectrum (𝓞 F)} (hv : v ∈ S)
     {α β : v.adicCompletionIntegers F} (hα : α ≠ 0) (hβ : β ≠ 0) :
     U r S R α hα ∘ₗ U r S R β hβ =
     U r S R β hβ ∘ₗ U r S R α hα := by
@@ -1098,7 +1098,7 @@ lemma U_comm {v : HeightOneSpectrum (𝓞 F)} (hv : v ∈ S)
   rw [mul_comm]
 
 omit [IsTotallyReal F] in
-lemma U_comm_of_ne {v w : HeightOneSpectrum (𝓞 F)} (hv : v ∈ S) (hw : w ∈ S)
+private lemma U_comm_of_ne {v w : HeightOneSpectrum (𝓞 F)} (hv : v ∈ S) (hw : w ∈ S)
     (hvw : v ≠ w) {α : v.adicCompletionIntegers F} (hα : α ≠ 0)
     {β : w.adicCompletionIntegers F} (hβ : β ≠ 0) :
     U r S R α hα ∘ₗ U r S R β hβ =
@@ -1127,7 +1127,7 @@ lemma U_comm_of_ne {v w : HeightOneSpectrum (𝓞 F)} (hv : v ∈ S) (hw : w ∈
           exact unipotent_mul_diag_commute_of_ne (r := r) hvw hα hβ a ha b hb))
 
 omit [IsTotallyReal F] in
-lemma T_comm_U_of_ne {v w : HeightOneSpectrum (𝓞 F)} (hv : v ∉ S) (hw : w ∈ S)
+private lemma T_comm_U_of_ne {v w : HeightOneSpectrum (𝓞 F)} (hv : v ∉ S) (hw : w ∈ S)
     (hvw : v ≠ w) {β : w.adicCompletionIntegers F} (hβ : β ≠ 0) :
     HeckeOperator.T (F := F) (D := D) (S := S) r R v ∘ₗ
       U r S R β hβ =
