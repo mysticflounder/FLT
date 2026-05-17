@@ -65,6 +65,8 @@ of discriminant 1. More precisely, the level at each bad prime v has to be of th
 This is a far more restrictive definition of automorphic than is found in the literature,
 however it will suffice for the purpose of proving FLT.
 -/
+-- `_hV` and several V/ℤ_[p] instances constrain the interface, not the body.
+-- Kept to force callers to supply them.
 @[nolint unusedArguments]
 def GaloisRep.IsAutomorphicOfLevel
     -- `F` is a totally real field
