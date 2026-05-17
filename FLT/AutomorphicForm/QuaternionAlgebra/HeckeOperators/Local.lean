@@ -141,7 +141,7 @@ noncomputable def unipotent_mul_diag (t : v.adicCompletionIntegers F) :
 namespace Internal
 
 /-- `!![α s; 0 1] * !![β t; 0 1] = !![αβ, αt+s; 0 1]`. -/
-lemma unipotent_mul_diag_mul_unipotent_mul_diag
+lemma unipotent_mul_diag_mul
     {β : v.adicCompletionIntegers F} (hβ : β ≠ 0)
     (s t : v.adicCompletionIntegers F) :
     unipotent_mul_diag α hα s * unipotent_mul_diag β hβ t =
@@ -153,7 +153,7 @@ lemma unipotent_mul_diag_mul_unipotent_mul_diag
 end Internal
 
 /-- `!![α t₁; 0 1]⁻¹ * [α t₂; 0 1] = [1 (t₂ - t₁) / α; 0 1]`. -/
-lemma unipotent_mul_diag_inv_mul_unipotent_mul_diag (t₁ t₂ : v.adicCompletionIntegers F) :
+lemma unipotent_mul_diag_inv_mul_self (t₁ t₂ : v.adicCompletionIntegers F) :
     (unipotent_mul_diag α hα t₁)⁻¹ * unipotent_mul_diag α hα t₂
     = unipotent ((α : v.adicCompletion F)⁻¹ * ((t₂ + -t₁) : adicCompletion F v )) := by
   ext i j
@@ -182,7 +182,7 @@ lemma apply_mem_integer (i j : Fin 2) :
     (x i j) ∈ (adicCompletionIntegers F v) :=
   GL2.v_le_one_of_mem_localFullLevel _ hx.left _ _
 
-lemma apply_zero_zero_sub_apply_one_one_mem_maximalIdeal :
+lemma diag_sub_mem_maximalIdeal :
     (⟨(x 0 0), apply_mem_integer hx _ _⟩ - ⟨(x 1 1), apply_mem_integer hx _ _⟩)
     ∈ IsLocalRing.maximalIdeal (adicCompletionIntegers F v) :=
   (mem_completionIdeal_iff _ v _).mpr hx.right.left
@@ -212,7 +212,7 @@ lemma isUnit_apply_one_one :
     IsUnit (⟨(x 1 1), apply_mem_integer hx _ _⟩ : adicCompletionIntegers F v) :=
   (IsLocalRing.notMem_maximalIdeal.mp (apply_one_one_notMem_maximalIdeal hx))
 
-lemma conjBy_diag_mem_U1_iff_apply_zero_one_mem_ideal :
+lemma conjBy_diag_mem_iff :
     (diag α hα)⁻¹ * x * diag α hα ∈ U1 v
     ↔ ⟨(x 0 1), apply_mem_integer hx _ _⟩ ∈ (Ideal.span {α}) := by
   let a : (adicCompletionIntegers F v) := ⟨_, apply_mem_integer hx 0 0⟩
@@ -301,10 +301,10 @@ lemma injOn_leftCoset :
   intro t₁ h₁ t₂ h₂ h
   /- If `leftCoset t₁ = leftCoset t₂`,
   then `(unipotent_mul_diag t₁)⁻¹ * (unipotent_mul_diag t₂)` is in `U1 v`.
-  Note `unipotent_mul_diag_inv_mul_unipotent_mul_diag` tells us that
+  Note `unipotent_mul_diag_inv_mul_self` tells us that
   `(unipotent_mul_diag t₁)⁻¹ * (unipotent_mul_diag t₂)` is `unipotent`. -/
   have unipotent_mem_U1 :=
-    (unipotent_mul_diag_inv_mul_unipotent_mul_diag α hα (Quotient.out t₁) (Quotient.out t₂)) ▸
+    (unipotent_mul_diag_inv_mul_self α hα (Quotient.out t₁) (Quotient.out t₂)) ▸
       (QuotientGroup.eq.mp h)
   /- Then inspecting the top-right entry of `(unipotent_mul_diag t₁)⁻¹ * (unipotent_mul_diag t₂)`
   gives us `t₁ = t₂`. -/
@@ -348,10 +348,10 @@ lemma surjOn_leftCoset_doubleCoset :
   apply QuotientGroup.eq.mpr
   unfold unipotent_mul_diag; rw[mul_inv_rev, ← mul_assoc, mul_assoc _ _ x]
   /- But `unipotent_mul_diag⁻¹ * x * diag = diag⁻¹ * (unipotent⁻¹ * x) * diag`,
-  so we can apply `conjBy_diag_mem_U1_iff_apply_zero_one_mem_ideal`,
+  so we can apply `conjBy_diag_mem_iff`,
   and it suffices to show `(unipotent⁻¹ * x) 0 1 ∈ (Ideal.span {α})`.
   The choice of t guarantees this. -/
-  apply (conjBy_diag_mem_U1_iff_apply_zero_one_mem_ideal
+  apply (conjBy_diag_mem_iff
     (Subgroup.mul_mem _ (Subgroup.inv_mem _ (unipotent_mem_U1 _)) hx)).mpr
   simp only [Fin.isValue, Units.val_mul, Matrix.coe_units_inv, unipotent_def, Matrix.inv_def,
     Matrix.det_fin_two_of, mul_one, mul_zero, sub_zero, Ring.inverse_one,
@@ -521,7 +521,7 @@ private lemma injOn_leftCoset :
         ((Quotient.out t₂ + -Quotient.out t₁) : adicCompletion F v))
       ∈ adicCompletionIntegers F v := by
     have hmem' := hmem
-    rw [unipotent_mul_diag_inv_mul_unipotent_mul_diag
+    rw [unipotent_mul_diag_inv_mul_self
       (α := uniformizerInt (F := F) v) (hα := uniformizerInt_ne_zero (F := F) v)
       (t₁ := Quotient.out t₁) (t₂ := Quotient.out t₂)] at hmem'
     have hval := GL2.v_le_one_of_mem_localFullLevel _ hmem' 0 1

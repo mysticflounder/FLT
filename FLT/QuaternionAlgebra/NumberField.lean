@@ -431,7 +431,7 @@ namespace GL2.Internal
 /-- Bridging lemma: applying `GL2.toAdicCompletion w` to the embedding of a single
 local element `g_loc` at place `v` via the restricted product isomorphism gives
 `g_loc` if `w = v` and `1` otherwise. -/
-lemma toAdicCompletion_restrictedProduct_symm_mulSingle_same
+lemma toAdicCompletion_symm_mulSingle_self
     [DecidableEq (HeightOneSpectrum (𝓞 F))]
     (v : HeightOneSpectrum (𝓞 F)) (g_loc : GL (Fin 2) (v.adicCompletion F)) :
     GL2.toAdicCompletion v
@@ -441,7 +441,7 @@ lemma toAdicCompletion_restrictedProduct_symm_mulSingle_same
   rw [GL2.toAdicCompletion_restrictedProduct_symm_val_apply,
     RestrictedProduct.mulSingle_eq_same]
 
-lemma toAdicCompletion_restrictedProduct_symm_mulSingle_ne
+lemma toAdicCompletion_symm_mulSingle_of_ne
     [DecidableEq (HeightOneSpectrum (𝓞 F))]
     {w v : HeightOneSpectrum (𝓞 F)} (hwv : w ≠ v)
     (g_loc : GL (Fin 2) (v.adicCompletion F)) :

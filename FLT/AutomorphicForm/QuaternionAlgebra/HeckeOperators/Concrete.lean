@@ -404,15 +404,15 @@ theorem bijOn_leftCoset_doubleCoset (hv : v ∈ S) :
       refine ⟨fun w => ?_, fun w _ => ?_⟩
       · by_cases hwv : w = v
         · subst hwv
-          rw [toAdicCompletion_restrictedProduct_symm_mulSingle_same w _]
+          rw [toAdicCompletion_symm_mulSingle_self w _]
           exact (Local.GL2.unipotent_mem_U1 (v := w) (Quotient.out i)).1
-        · rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+        · rw [toAdicCompletion_symm_mulSingle_of_ne hwv _]
           exact (GL2.localFullLevel w).one_mem
       · by_cases hwv : w = v
         · subst hwv
-          rw [toAdicCompletion_restrictedProduct_symm_mulSingle_same w _]
+          rw [toAdicCompletion_symm_mulSingle_self w _]
           exact Local.GL2.unipotent_mem_U1 (v := w) (Quotient.out i)
-        · rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+        · rw [toAdicCompletion_symm_mulSingle_of_ne hwv _]
           exact (GL2.localTameLevel w).one_mem
     -- Show `unipotent_mul_diag r α hα i = u_glob * diag r α hα`.
     have h_eq : unipotent_mul_diag r α hα i = u_glob * diag r α hα := by
@@ -463,14 +463,14 @@ theorem bijOn_leftCoset_doubleCoset (hv : v ∈ S) :
     have hg_loc_mem : g_loc ∈ GL2.localFullLevel v := by
       have := hw'_mem.1 v
       rwa [hw'_def,
-        toAdicCompletion_restrictedProduct_symm_mulSingle_same v g_loc] at this
+        toAdicCompletion_symm_mulSingle_self v g_loc] at this
     -- Entry (0,1) of `g_loc`, which equals `α⁻¹ * (t_j - t_i)`, must be in `O_v`.
     have h01_int : ((g_loc : GL (Fin 2) (adicCompletion F v)) 0 1) ∈
         (adicCompletionIntegers F v) := GL2.v_le_one_of_mem_localFullLevel _ hg_loc_mem 0 1
     have hg_loc_val : g_loc = Matrix.GeneralLinearGroup.GL2.unipotent
         ((α : v.adicCompletion F)⁻¹ *
           ((t_j : adicCompletion F v) + -(t_i : adicCompletion F v))) := by
-      exact Local.GL2.unipotent_mul_diag_inv_mul_unipotent_mul_diag α hα t_i t_j
+      exact Local.GL2.unipotent_mul_diag_inv_mul_self α hα t_i t_j
     have h01_eq : ((g_loc : GL (Fin 2) (adicCompletion F v)) 0 1) =
         (α : v.adicCompletion F)⁻¹ *
           ((t_j : adicCompletion F v) + -(t_i : adicCompletion F v)) := by
@@ -533,26 +533,26 @@ theorem bijOn_leftCoset_doubleCoset (hv : v ∈ S) :
         · subst hwv
           rw [hW_def]
           simp only [map_mul, map_inv]
-          rw [toAdicCompletion_restrictedProduct_symm_mulSingle_same w_place _,
-            toAdicCompletion_restrictedProduct_symm_mulSingle_same w_place _]
+          rw [toAdicCompletion_symm_mulSingle_self w_place _,
+            toAdicCompletion_symm_mulSingle_self w_place _]
           exact hlocal_ratio.1
         · rw [hW_def]
           simp only [map_mul, map_inv]
-          rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _,
-            toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+          rw [toAdicCompletion_symm_mulSingle_of_ne hwv _,
+            toAdicCompletion_symm_mulSingle_of_ne hwv _]
           simp only [inv_one, one_mul, mul_one]
           exact hw_mem.1 w_place
       · by_cases hwv : w_place = v
         · subst hwv
           rw [hW_def]
           simp only [map_mul, map_inv]
-          rw [toAdicCompletion_restrictedProduct_symm_mulSingle_same w_place _,
-            toAdicCompletion_restrictedProduct_symm_mulSingle_same w_place _]
+          rw [toAdicCompletion_symm_mulSingle_self w_place _,
+            toAdicCompletion_symm_mulSingle_self w_place _]
           exact hlocal_ratio
         · rw [hW_def]
           simp only [map_mul, map_inv]
-          rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _,
-            toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+          rw [toAdicCompletion_symm_mulSingle_of_ne hwv _,
+            toAdicCompletion_symm_mulSingle_of_ne hwv _]
           simp only [inv_one, one_mul, mul_one]
           exact hw_mem.2 w_place hwS
     · -- Show `Units.map r.symm.toMonoidHom W = ratio`.
@@ -607,15 +607,15 @@ private theorem bijOn_T_cosets_doubleCoset
           refine ⟨fun w => ?_, fun w hwS => ?_⟩
           · by_cases hwv : w = v
             · subst hwv
-              rw [toAdicCompletion_restrictedProduct_symm_mulSingle_same w _]
+              rw [toAdicCompletion_symm_mulSingle_self w _]
               exact Local.GL2.Internal.swap_mem_localFullLevel (v := w)
-            · rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+            · rw [toAdicCompletion_symm_mulSingle_of_ne hwv _]
               exact (GL2.localFullLevel w).one_mem
           · by_cases hwv : w = v
             · subst hwv
-              rw [toAdicCompletion_restrictedProduct_symm_mulSingle_same w _]
+              rw [toAdicCompletion_symm_mulSingle_self w _]
               exact absurd hwS hv
-            · rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+            · rw [toAdicCompletion_symm_mulSingle_of_ne hwv _]
               exact (GL2.localTameLevel w).one_mem
         have h_eq : GoodPrime.swap_mul_diag (r := r) v = u_glob * diag r π hπ := by
           rw [hu_glob_def]
@@ -637,15 +637,15 @@ private theorem bijOn_T_cosets_doubleCoset
           refine ⟨fun w => ?_, fun w _ => ?_⟩
           · by_cases hwv : w = v
             · subst hwv
-              rw [toAdicCompletion_restrictedProduct_symm_mulSingle_same w _]
+              rw [toAdicCompletion_symm_mulSingle_self w _]
               exact (Local.GL2.unipotent_mem_U1 (v := w) (Quotient.out i)).1
-            · rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+            · rw [toAdicCompletion_symm_mulSingle_of_ne hwv _]
               exact (GL2.localFullLevel w).one_mem
           · by_cases hwv : w = v
             · subst hwv
-              rw [toAdicCompletion_restrictedProduct_symm_mulSingle_same w _]
+              rw [toAdicCompletion_symm_mulSingle_self w _]
               exact Local.GL2.unipotent_mem_U1 (v := w) (Quotient.out i)
-            · rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+            · rw [toAdicCompletion_symm_mulSingle_of_ne hwv _]
               exact (GL2.localTameLevel w).one_mem
         have h_eq : GoodPrime.unipotent_mul_diag (r := r) v π hπ i = u_glob * diag r π hπ := by
           rw [hu_glob_def]
@@ -684,7 +684,7 @@ private theorem bijOn_T_cosets_doubleCoset
           Local.Internal.Full.swapCoset,
           Local.Internal.Full.leftCoset, GoodPrime.goodPrimeRep,
           GoodPrime.swap_mul_diag, GoodPrime.unipotent_mul_diag, hmap_symm,
-          toAdicCompletion_restrictedProduct_symm_mulSingle_same] at hWv ⊢
+          toAdicCompletion_symm_mulSingle_self] at hWv ⊢
       all_goals exact QuotientGroup.eq.mpr hWv
     have ht :=
       Local.Internal.Full.injOn_cosetReps (v := v) trivial trivial hlocal
@@ -730,23 +730,23 @@ private theorem bijOn_T_cosets_doubleCoset
             · subst hwv
               rw [hW_def]
               simp only [map_mul, map_inv]
-              rw [toAdicCompletion_restrictedProduct_symm_mulSingle_same
+              rw [toAdicCompletion_symm_mulSingle_self
                 w_place _,
-                toAdicCompletion_restrictedProduct_symm_mulSingle_same
+                toAdicCompletion_symm_mulSingle_self
                   w_place _]
               exact hlocal_ratio
             · rw [hW_def]
               simp only [map_mul, map_inv]
-              rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _,
-                toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+              rw [toAdicCompletion_symm_mulSingle_of_ne hwv _,
+                toAdicCompletion_symm_mulSingle_of_ne hwv _]
               simp only [inv_one, one_mul, mul_one]
               exact hw_mem.1 w_place
           · by_cases hwv : w_place = v
             · subst hwv; exact absurd hwS hv
             · rw [hW_def]
               simp only [map_mul, map_inv]
-              rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _,
-                toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+              rw [toAdicCompletion_symm_mulSingle_of_ne hwv _,
+                toAdicCompletion_symm_mulSingle_of_ne hwv _]
               simp only [inv_one, one_mul, mul_one]
               exact hw_mem.2 w_place hwS
         · rw [← hw_eq]
@@ -784,23 +784,23 @@ private theorem bijOn_T_cosets_doubleCoset
             · subst hwv
               rw [hW_def]
               simp only [map_mul, map_inv]
-              rw [toAdicCompletion_restrictedProduct_symm_mulSingle_same
+              rw [toAdicCompletion_symm_mulSingle_self
                 w_place _,
-                toAdicCompletion_restrictedProduct_symm_mulSingle_same
+                toAdicCompletion_symm_mulSingle_self
                   w_place _]
               exact hlocal_ratio
             · rw [hW_def]
               simp only [map_mul, map_inv]
-              rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _,
-                toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+              rw [toAdicCompletion_symm_mulSingle_of_ne hwv _,
+                toAdicCompletion_symm_mulSingle_of_ne hwv _]
               simp only [inv_one, one_mul, mul_one]
               exact hw_mem.1 w_place
           · by_cases hwv : w_place = v
             · subst hwv; exact absurd hwS hv
             · rw [hW_def]
               simp only [map_mul, map_inv]
-              rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _,
-                toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+              rw [toAdicCompletion_symm_mulSingle_of_ne hwv _,
+                toAdicCompletion_symm_mulSingle_of_ne hwv _]
               simp only [inv_one, one_mul, mul_one]
               exact hw_mem.2 w_place hwS
         · rw [← hw_eq]
@@ -944,7 +944,7 @@ private lemma unipotent_mul_diag_lift_mul {β : v.adicCompletionIntegers F} (hβ
       ((α : adicCompletionIntegers F v) * t + s) := by
   simp only [unipotent_mul_diag_lift, ← map_mul, ← RestrictedProduct.mulSingle_mul]
   congr 3
-  exact Local.GL2.Internal.unipotent_mul_diag_mul_unipotent_mul_diag α hα hβ s t
+  exact Local.GL2.Internal.unipotent_mul_diag_mul α hα hβ s t
 
 set_option maxHeartbeats 400000 in
 -- The proof rewrites a `smul` equality through `mulSingle_mul` and `map_mul`.
@@ -977,17 +977,17 @@ private lemma unipotent_mul_diag_lift_smul_eq {γ : v.adicCompletionIntegers F} 
         -- At every place `w`, the element is in `localFullLevel w`.
         by_cases hwv : w = v
         · subst hwv
-          rw [toAdicCompletion_restrictedProduct_symm_mulSingle_same w _]
+          rw [toAdicCompletion_symm_mulSingle_self w _]
           exact (Local.GL2.unipotent_mem_U1 (v := w) m).1
         · -- The image at `w ≠ v` is `1`, which is in `localFullLevel`.
-          rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+          rw [toAdicCompletion_symm_mulSingle_of_ne hwv _]
           exact (GL2.localFullLevel w).one_mem
       · intro w hwS
         by_cases hwv : w = v
         · subst hwv
-          rw [toAdicCompletion_restrictedProduct_symm_mulSingle_same w _]
+          rw [toAdicCompletion_symm_mulSingle_self w _]
           exact Local.GL2.unipotent_mem_U1 (v := w) m
-        · rw [toAdicCompletion_restrictedProduct_symm_mulSingle_ne hwv _]
+        · rw [toAdicCompletion_symm_mulSingle_of_ne hwv _]
           exact (GL2.localTameLevel w).one_mem
     · -- Applying `Units.map r.symm.toMonoidHom` to the witness yields `u''`.
       change Units.map r.symm.toMonoidHom _ = u''
@@ -1001,7 +1001,7 @@ private lemma unipotent_mul_diag_lift_smul_eq {γ : v.adicCompletionIntegers F} 
       rw [← map_inv, ← map_mul, ← RestrictedProduct.mulSingle_inv,
         ← RestrictedProduct.mulSingle_mul]
       congr 1
-      rw [Local.GL2.unipotent_mul_diag_inv_mul_unipotent_mul_diag γ hγ t₂ t₁]
+      rw [Local.GL2.unipotent_mul_diag_inv_mul_self γ hγ t₂ t₁]
       congr 1
       -- Need: `(γ : adicCompletion F v)⁻¹ * (t₁ + -t₂) = m` (in `adicCompletion F v`).
       have hmval : ((t₁ : adicCompletion F v) + -(t₂ : adicCompletion F v)) =
