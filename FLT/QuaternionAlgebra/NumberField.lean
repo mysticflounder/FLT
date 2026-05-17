@@ -88,7 +88,6 @@ theorem M2.localFullLevel.isCompact (v : HeightOneSpectrum (𝓞 F)) :
 
 -- the clever way to prove this is a theorem of the form "if A is an open submonoid of R
 -- then Aˣ is an open subgroup of Rˣ"
-set_option linter.unnecessarySimpa false in
 private theorem GL2.localFullLevel_eq_units (v : HeightOneSpectrum (𝓞 F)) :
     GL2.localFullLevel v = (M2.localFullLevel v).toSubmonoid.units := by
   ext x
@@ -145,9 +144,9 @@ private theorem GL2.localFullLevel_eq_units (v : HeightOneSpectrum (𝓞 F)) :
     have hmul : (a * b).map (v.adicCompletionIntegers F).subtype = 1 := by
       have h0 : (x : Matrix (Fin 2) (Fin 2) (v.adicCompletion F)) *
           (x⁻¹ : Matrix (Fin 2) (Fin 2) (v.adicCompletion F)) = 1 := by
-        simpa using x.mul_inv
+        simpa only [Matrix.coe_units_inv] using x.mul_inv
       rw [Matrix.map_mul, ha, hb]
-      simpa using h0
+      simpa only [Matrix.coe_units_inv] using h0
     have hmul' : a * b = 1 := by
       have hmulmap : (a * b).map (v.adicCompletionIntegers F).subtype =
           (1 : Matrix (Fin 2) (Fin 2) (v.adicCompletionIntegers F)).map

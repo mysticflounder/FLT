@@ -239,7 +239,6 @@ private noncomputable def T_cosets_image (v : HeightOneSpectrum (𝓞 F)) :
     Set (D ⊗[F] (FiniteAdeleRing (𝓞 F) F))ˣ :=
   goodPrimeRep_image (r := r) v
 
-set_option linter.flexible false in
 omit [IsTotallyReal F] [IsQuaternionAlgebra F D] in
 private lemma unipotent_mul_diag_inj (v : HeightOneSpectrum (𝓞 F)) :
     Set.InjOn (unipotent_mul_diag (r := r) v (uniformizerInt (F := F) v)
@@ -252,6 +251,8 @@ private lemma unipotent_mul_diag_inj (v : HeightOneSpectrum (𝓞 F)) :
   simpa [Local.GL2.unipotent_mul_diag, Matrix.GeneralLinearGroup.GL2.unipotent, Local.GL2.diag,
     Matrix.unitOfDetInvertible, Matrix.GeneralLinearGroup.diagonal] using h''
 
+-- `simp` here unfolds `swap_mul_diag`/`unipotent_mul_diag` against the swap matrix
+-- whose entries differ by branch; the relevant rewrites differ per case split.
 set_option linter.flexible false in
 omit [IsTotallyReal F] [IsQuaternionAlgebra F D] in
 private lemma goodPrimeRep_inj (v : HeightOneSpectrum (𝓞 F)) :
@@ -574,6 +575,9 @@ lemma unipotent_mul_diag_image_finite :
 
 set_option maxHeartbeats 800000 in
 -- The T-coset BijOn unfolds the P¹(kᵥ)-indexed decomposition with case splits.
+-- The inner `simp` is flexible: each `cases t <;> cases t'` branch lands on a
+-- different normal form (swap-swap, swap-unipotent, ...), so the actual rewrites
+-- differ per case.
 set_option linter.flexible false in
 omit [IsTotallyReal F] [IsQuaternionAlgebra F D] in
 private theorem bijOn_T_cosets_doubleCoset

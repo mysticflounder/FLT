@@ -104,6 +104,8 @@ lemma swap_mem_localFullLevel :
 
 end Internal
 
+-- `simp [unipotent_def]` is flexible: the value-≤-1 obligation at each matrix
+-- entry pulls in different `Valued.v_*` lemmas from the simp set.
 set_option linter.flexible false in
 private lemma unipotent_mem_localFullLevel (t : v.adicCompletionIntegers F) :
     Matrix.GeneralLinearGroup.GL2.unipotent (t : adicCompletion F v) ∈ GL2.localFullLevel v := by
@@ -499,6 +501,9 @@ private lemma uniformizerInt_inv_not_mem (v : HeightOneSpectrum (𝓞 F)) :
           (↑(uniformizerInt (F := F) v) : adicCompletion F v)⁻¹ = 1)
   exact uniformizerInt_not_isUnit (F := F) v hunit
 
+-- `simp [unipotent_def]` is flexible: the value-1 obligation at the (0,1) entry
+-- pulls in different `Valued.v_*` and `mul_*`/`add_*` lemmas depending on which
+-- branch the entry sits in.
 set_option linter.flexible false in
 private lemma injOn_unipotent_mul_diagLocalFullLevel :
     Set.InjOn (unipotent_mul_diagLocalFullLevel (v := v)) ⊤ := by
@@ -613,7 +618,6 @@ lemma injOn_localFullLevelDiagLocalFullLevelRep :
           congr
           exact injOn_unipotent_mul_diagLocalFullLevel (v := v) trivial trivial h
 
-set_option linter.unnecessarySimpa false in
 private lemma quotient_diff_mul_mem_span {R : Type*} [CommRing R] {π b d t₀ : R} [Invertible d]
     (hq : t₀ - (⅟d : R) * b ∈ Ideal.span {π}) :
     b + -t₀ * d ∈ Ideal.span {π} := by
@@ -623,14 +627,12 @@ private lemma quotient_diff_mul_mem_span {R : Type*} [CommRing R] {π b d t₀ :
     simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using hq_neg
   have hqd : (((⅟d : R) * b - t₀) * d) ∈ Ideal.span {π} := by
     exact Ideal.mul_mem_right d (Ideal.span {π}) hq'
-  have h_inv : (⅟d : R) * d = 1 := by
-    simpa using (inv_mul_cancel₀ (x := d) : (⅟d : R) * d = 1)
+  have h_inv : (⅟d : R) * d = 1 := invOf_mul_self d
   simpa [sub_eq_add_neg, mul_add, add_mul, mul_assoc, mul_comm, mul_left_comm, h_inv] using hqd
 
 set_option maxHeartbeats 3200000 in
 -- The SurjOn proof decomposes a generic `x ∈ localFullLevel` into 2x2 entries
 -- and replays the membership/finiteness witness for each entry separately.
-set_option linter.unnecessarySimpa false in
 lemma surjOn_localFullLevelDiagLocalFullLevelRep_localFullLevelDiagLocalFullLevel :
     Set.SurjOn (localFullLevelDiagLocalFullLevelRep (v := v)) Set.univ
       (localFullLevelDiagLocalFullLevel (v := v)) := by
@@ -703,7 +705,7 @@ lemma surjOn_localFullLevelDiagLocalFullLevelRep_localFullLevelDiagLocalFullLeve
         exact sub_mem a.2 (mul_mem t₀.2 c.2)
       have ht : (b + -t₀ * d) ∈ Ideal.span {π} := by
         have t_def : (Ideal.Quotient.mk (Ideal.span {π})) t₀ = (⅟d * b) := by
-          simpa [t, t₀] using (Ideal.Quotient.mk_out t)
+          simp [t, t₀]
         have hq : t₀ - (⅟d : adicCompletionIntegers F v) * b ∈ Ideal.span {π} := by
           exact Ideal.Quotient.eq.mp t_def
         exact quotient_diff_mul_mem_span (π := π) (b := b) (d := d) (t₀ := t₀) hq
@@ -741,7 +743,7 @@ lemma surjOn_localFullLevelDiagLocalFullLevelRep_localFullLevelDiagLocalFullLeve
             hz
         rw [h01simp]
         have t_def : (Ideal.Quotient.mk (Ideal.span {π})) t₀ = (⅟d * b) := by
-          simpa [t, t₀] using (Ideal.Quotient.mk_out t)
+          simp [t, t₀]
         have hq : t₀ - (⅟d : adicCompletionIntegers F v) * b ∈ Ideal.span {π} := by
           exact Ideal.Quotient.eq.mp t_def
         have hbt : (b : adicCompletionIntegers F v) + -((t₀ : adicCompletionIntegers F v) * d) ∈
