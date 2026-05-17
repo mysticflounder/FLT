@@ -397,16 +397,18 @@ lemma uniformizerInt_ne_zero (v : HeightOneSpectrum (𝓞 F)) : uniformizerInt (
   rw [h] at h'
   simp at h'
 
+namespace Full
+
 variable (v) in
 /-- The double coset space `GL₂(𝒪ᵥ) diag(ϖᵥ,1) GL₂(𝒪ᵥ)` as a set of left cosets. -/
-noncomputable def localFullLevelDiagLocalFullLevel :
+noncomputable def doubleCoset :
     Set ((GL (Fin 2) (adicCompletion F v)) ⧸ (GL2.localFullLevel v)) :=
   QuotientGroup.mk '' ((GL2.localFullLevel v) * {GL2.diag (uniformizerInt (F := F) v)
     (uniformizerInt_ne_zero (F := F) v)})
 
 variable (v) in
 /-- For each `t ∈ 𝒪ᵥ / (ϖᵥ)`, the left coset `unipotent_mul_diag` for a lift of `t`. -/
-noncomputable def unipotent_mul_diagLocalFullLevel
+noncomputable def leftCoset
     (t : ↑(adicCompletionIntegers F v) ⧸ (Ideal.span {uniformizerInt (F := F) v})) :
     ((GL (Fin 2) (adicCompletion F v)) ⧸ ↑(GL2.localFullLevel v)) :=
   QuotientGroup.mk (unipotent_mul_diag (uniformizerInt (F := F) v)
@@ -414,36 +416,36 @@ noncomputable def unipotent_mul_diagLocalFullLevel
 
 variable (v) in
 /-- The extra coset corresponding to the `swap` representative. -/
-noncomputable def swap_mul_diagLocalFullLevel :
+noncomputable def swapCoset :
     ((GL (Fin 2) (adicCompletion F v)) ⧸ ↑(GL2.localFullLevel v)) :=
   QuotientGroup.mk (Matrix.GeneralLinearGroup.swap (adicCompletion F v) (0 : Fin 2) 1 *
     GL2.diag (uniformizerInt (F := F) v) (uniformizerInt_ne_zero (F := F) v))
 
 /-- A `P¹(k_v)`-indexed family of right-coset representatives for the good-prime double coset. -/
-noncomputable def localFullLevelDiagLocalFullLevelRep :
+noncomputable def cosetReps :
     Option (↑(adicCompletionIntegers F v) ⧸ Ideal.span {uniformizerInt (F := F) v}) →
       ((GL (Fin 2) (adicCompletion F v)) ⧸ ↑(GL2.localFullLevel v))
-| none => swap_mul_diagLocalFullLevel (v := v)
-| some t => unipotent_mul_diagLocalFullLevel (v := v) t
+| none => swapCoset (v := v)
+| some t => leftCoset (v := v) t
 
-private lemma mapsTo_unipotent_mul_diagLocalFullLevel_localFullLevelDiagLocalFullLevel :
-    Set.MapsTo (unipotent_mul_diagLocalFullLevel (v := v)) ⊤
-      (localFullLevelDiagLocalFullLevel (v := v)) := by
+private lemma mapsTo_leftCoset_doubleCoset :
+    Set.MapsTo (leftCoset (v := v)) ⊤
+      (doubleCoset (v := v)) := by
   intro t ht
   exact Set.mem_image_of_mem QuotientGroup.mk
     (Set.mul_mem_mul (unipotent_mem_localFullLevel (v := v) (Quotient.out t)) rfl)
 
-private lemma mapsTo_localFullLevelDiagLocalFullLevelRep_localFullLevelDiagLocalFullLevel :
-    Set.MapsTo (localFullLevelDiagLocalFullLevelRep (v := v)) Set.univ
-      (localFullLevelDiagLocalFullLevel (v := v)) := by
+private lemma mapsTo_cosetReps_doubleCoset :
+    Set.MapsTo (cosetReps (v := v)) Set.univ
+      (doubleCoset (v := v)) := by
   intro t ht
   cases t with
   | none =>
-      change swap_mul_diagLocalFullLevel (v := v) ∈ localFullLevelDiagLocalFullLevel (v := v)
+      change swapCoset (v := v) ∈ doubleCoset (v := v)
       exact Set.mem_image_of_mem QuotientGroup.mk
         (Set.mul_mem_mul (GL2.Internal.swap_mem_localFullLevel (v := v)) rfl)
   | some t =>
-      change unipotent_mul_diagLocalFullLevel (v := v) t ∈ localFullLevelDiagLocalFullLevel (v := v)
+      change leftCoset (v := v) t ∈ doubleCoset (v := v)
       exact Set.mem_image_of_mem QuotientGroup.mk
         (Set.mul_mem_mul (unipotent_mem_localFullLevel (v := v) (Quotient.out t)) rfl)
 
@@ -505,8 +507,8 @@ private lemma uniformizerInt_inv_not_mem (v : HeightOneSpectrum (𝓞 F)) :
 -- pulls in different `Valued.v_*` and `mul_*`/`add_*` lemmas depending on which
 -- branch the entry sits in.
 set_option linter.flexible false in
-private lemma injOn_unipotent_mul_diagLocalFullLevel :
-    Set.InjOn (unipotent_mul_diagLocalFullLevel (v := v)) ⊤ := by
+private lemma injOn_leftCoset :
+    Set.InjOn (leftCoset (v := v)) ⊤ := by
   intro t₁ h₁ t₂ h₂ h
   have hmem : (unipotent_mul_diag (uniformizerInt (F := F) v)
       (uniformizerInt_ne_zero (F := F) v) (Quotient.out t₁ : adicCompletionIntegers F v))⁻¹ *
@@ -537,9 +539,9 @@ private lemma injOn_unipotent_mul_diagLocalFullLevel :
   simp [add_comm]
   exact mul_comm _ _
 
-private lemma swap_mul_diagLocalFullLevel_ne_unipotent_mul_diagLocalFullLevel
+private lemma swapCoset_ne_leftCoset
     (t : ↑(adicCompletionIntegers F v) ⧸ Ideal.span {uniformizerInt (F := F) v}) :
-    swap_mul_diagLocalFullLevel (v := v) ≠ unipotent_mul_diagLocalFullLevel (v := v) t := by
+    swapCoset (v := v) ≠ leftCoset (v := v) t := by
   intro h
   let π : adicCompletionIntegers F v := uniformizerInt (F := F) v
   let hπ : π ≠ 0 := uniformizerInt_ne_zero (F := F) v
@@ -599,8 +601,8 @@ private lemma swap_mul_diagLocalFullLevel_ne_unipotent_mul_diagLocalFullLevel
     (mem_adicCompletionIntegers _ _ _).2 hval
   exact uniformizerInt_inv_not_mem (F := F) v (by simpa [π] using htop)
 
-lemma injOn_localFullLevelDiagLocalFullLevelRep :
-    Set.InjOn (localFullLevelDiagLocalFullLevelRep (v := v)) Set.univ := by
+lemma injOn_cosetReps :
+    Set.InjOn (cosetReps (v := v)) Set.univ := by
   intro t ht t' ht' h
   cases t with
   | none =>
@@ -608,15 +610,15 @@ lemma injOn_localFullLevelDiagLocalFullLevelRep :
       | none => rfl
       | some t' =>
           exact False.elim
-            (swap_mul_diagLocalFullLevel_ne_unipotent_mul_diagLocalFullLevel t' h)
+            (swapCoset_ne_leftCoset t' h)
   | some t =>
       cases t' with
       | none =>
           exact False.elim
-            (swap_mul_diagLocalFullLevel_ne_unipotent_mul_diagLocalFullLevel t h.symm)
+            (swapCoset_ne_leftCoset t h.symm)
       | some t' =>
           congr
-          exact injOn_unipotent_mul_diagLocalFullLevel (v := v) trivial trivial h
+          exact injOn_leftCoset (v := v) trivial trivial h
 
 private lemma quotient_diff_mul_mem_span {R : Type*} [CommRing R] {π b d t₀ : R} [Invertible d]
     (hq : t₀ - (⅟d : R) * b ∈ Ideal.span {π}) :
@@ -633,9 +635,9 @@ private lemma quotient_diff_mul_mem_span {R : Type*} [CommRing R] {π b d t₀ :
 set_option maxHeartbeats 3200000 in
 -- The SurjOn proof decomposes a generic `x ∈ localFullLevel` into 2x2 entries
 -- and replays the membership/finiteness witness for each entry separately.
-lemma surjOn_localFullLevelDiagLocalFullLevelRep_localFullLevelDiagLocalFullLevel :
-    Set.SurjOn (localFullLevelDiagLocalFullLevelRep (v := v)) Set.univ
-      (localFullLevelDiagLocalFullLevel (v := v)) := by
+lemma surjOn_cosetReps_doubleCoset :
+    Set.SurjOn (cosetReps (v := v)) Set.univ
+      (doubleCoset (v := v)) := by
   rintro _ ⟨_, ⟨x, hx, _, rfl, rfl⟩, rfl⟩
   let a : (adicCompletionIntegers F v) := ⟨_, GL2.v_le_one_of_mem_localFullLevel _ hx 0 0⟩
   let b : (adicCompletionIntegers F v) := ⟨_, GL2.v_le_one_of_mem_localFullLevel _ hx 0 1⟩
@@ -653,7 +655,7 @@ lemma surjOn_localFullLevelDiagLocalFullLevelRep_localFullLevelDiagLocalFullLeve
     let t : ↥(adicCompletionIntegers F v) ⧸ (Ideal.span {π}) := (⅟d * b)
     let t₀ : adicCompletionIntegers F v := Quotient.out t
     refine ⟨some t, by simp, ?_⟩
-    simp only [localFullLevelDiagLocalFullLevelRep]
+    simp only [cosetReps]
     apply QuotientGroup.eq.mpr
     unfold unipotent_mul_diag
     rw [mul_inv_rev, unipotent_inv, ← mul_assoc, mul_assoc _ _ x]
@@ -841,7 +843,7 @@ lemma surjOn_localFullLevelDiagLocalFullLevelRep_localFullLevelDiagLocalFullLeve
       exact hdmem
     obtain ⟨q, hq⟩ := Ideal.mem_span_singleton'.mp hdspan
     refine ⟨none, by simp, ?_⟩
-    simp only [localFullLevelDiagLocalFullLevelRep]
+    simp only [cosetReps]
     apply QuotientGroup.eq.mpr
     rw [mul_inv_rev, ← mul_assoc, mul_assoc _ _ x]
     apply GL2.mem_localFullLevel_iff_v_le_one_and_v_det_eq_one.mpr
@@ -1015,6 +1017,8 @@ lemma surjOn_localFullLevelDiagLocalFullLevelRep_localFullLevelDiagLocalFullLeve
             adicCompletion F v)) = 1
       rw [hdet_units]
       simpa using (GL2.v_det_val_mem_localFullLevel_eq_one hx)
+
+end Full
 
 end Internal
 

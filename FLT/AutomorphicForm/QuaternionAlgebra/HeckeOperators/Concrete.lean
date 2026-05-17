@@ -675,19 +675,19 @@ private theorem bijOn_T_cosets_doubleCoset
       ext
       simp
     have hlocal :
-        Local.Internal.localFullLevelDiagLocalFullLevelRep (v := v) t =
-          Local.Internal.localFullLevelDiagLocalFullLevelRep (v := v) t' := by
+        Local.Internal.Full.cosetReps (v := v) t =
+          Local.Internal.Full.cosetReps (v := v) t' := by
       rw [hW_eq'] at hWv
       simp only [map_mul, map_inv] at hWv
       cases t <;> cases t' <;>
-        simp [Local.Internal.localFullLevelDiagLocalFullLevelRep,
-          Local.Internal.swap_mul_diagLocalFullLevel,
-          Local.Internal.unipotent_mul_diagLocalFullLevel, GoodPrime.goodPrimeRep,
+        simp [Local.Internal.Full.cosetReps,
+          Local.Internal.Full.swapCoset,
+          Local.Internal.Full.leftCoset, GoodPrime.goodPrimeRep,
           GoodPrime.swap_mul_diag, GoodPrime.unipotent_mul_diag, hmap_symm,
           toAdicCompletion_restrictedProduct_symm_mulSingle_same] at hWv ⊢
       all_goals exact QuotientGroup.eq.mpr hWv
     have ht :=
-      Local.Internal.injOn_localFullLevelDiagLocalFullLevelRep (v := v) trivial trivial hlocal
+      Local.Internal.Full.injOn_cosetReps (v := v) trivial trivial hlocal
     rw [ht]
   · rintro _ ⟨_, ⟨u, hu, _, rfl, rfl⟩, rfl⟩
     obtain ⟨w, hw_mem, hw_eq⟩ := Subgroup.mem_map.mp hu
@@ -696,10 +696,10 @@ private theorem bijOn_T_cosets_doubleCoset
     have hg_loc_full : g_loc ∈ GL2.localFullLevel v := hw_mem.1 v
     have hlocal_target :
         QuotientGroup.mk (g_loc * Local.GL2.diag π hπ) ∈
-          Local.Internal.localFullLevelDiagLocalFullLevel (v := v) :=
+          Local.Internal.Full.doubleCoset (v := v) :=
       ⟨_, Set.mul_mem_mul hg_loc_full rfl, rfl⟩
     obtain ⟨idx, _, hidx⟩ :=
-      Local.Internal.surjOn_localFullLevelDiagLocalFullLevelRep_localFullLevelDiagLocalFullLevel
+      Local.Internal.Full.surjOn_cosetReps_doubleCoset
         (v := v) hlocal_target
     cases idx with
     | none =>
@@ -708,7 +708,7 @@ private theorem bijOn_T_cosets_doubleCoset
               (Matrix.GeneralLinearGroup.swap (adicCompletion F v) (0 : Fin 2) 1 *
                 Local.GL2.diag π hπ) =
             QuotientGroup.mk (s := GL2.localFullLevel v) (g_loc * Local.GL2.diag π hπ) := by
-          simpa [Local.Internal.localFullLevelDiagLocalFullLevelRep] using hidx
+          simpa [Local.Internal.Full.cosetReps] using hidx
         have hlocal_ratio :
             (Matrix.GeneralLinearGroup.swap (adicCompletion F v) (0 : Fin 2) 1 *
               Local.GL2.diag π hπ)⁻¹ *
@@ -762,7 +762,7 @@ private theorem bijOn_T_cosets_doubleCoset
               (Local.GL2.unipotent_mul_diag π hπ
                 (Quotient.out t : adicCompletionIntegers F v)) =
             QuotientGroup.mk (s := GL2.localFullLevel v) (g_loc * Local.GL2.diag π hπ) := by
-          simpa [Local.Internal.localFullLevelDiagLocalFullLevelRep] using hidx
+          simpa [Local.Internal.Full.cosetReps] using hidx
         have hlocal_ratio :
             (Local.GL2.unipotent_mul_diag π hπ
                 (Quotient.out t : adicCompletionIntegers F v))⁻¹ *
