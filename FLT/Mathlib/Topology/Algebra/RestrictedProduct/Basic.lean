@@ -1,7 +1,7 @@
 /-
 Copyright (c) 2025 Matthew Jasper. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Matthew Jasper, Kevin Buzzard, Ruben Van de Velde
+Authors: Matthew Jasper, Kevin Buzzard, Ruben Van de Velde, Adam McKenna
 -/
 module
 
@@ -136,6 +136,19 @@ lemma mul_comm_of_disjoint_mulSupport {u v : Πʳ i, [G i, A i]}
     simp [hi]
   · rw [not_mem_mulSupport] at hi
     simp [hi]
+
+variable [DecidableEq ι] [(i : ι) → Monoid (G i)] [∀ i, SubmonoidClass (S i) (G i)] in
+-- Adapted from the merged `polyproof/FLT` support lemma used in the Hecke commutativity path.
+omit [(i : ι) → Monoid (G i)] [∀ i, SubmonoidClass (S i) (G i)] in
+@[to_additive
+  /-- Additive analog of `RestrictedProduct.mulSingle_commute`. -/]
+lemma mulSingle_commute [∀ i, MulOneClass (G i)] [∀ i, OneMemClass (S i) (G i)]
+    [∀ i, MulMemClass (S i) (G i)] :
+    Pairwise fun i j => ∀ (x : G i) (y : G j),
+      Commute (mulSingle A i x) (mulSingle A j y) := by
+  intro i j hij x y
+  apply Subtype.ext
+  exact Pi.mulSingle_commute hij x y
 
 variable [(i : ι) → Monoid (G i)] [∀ i, SubmonoidClass (S i) (G i)] in
 @[to_additive]
