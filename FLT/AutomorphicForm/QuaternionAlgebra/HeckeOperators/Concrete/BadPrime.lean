@@ -775,7 +775,8 @@ by
     (finsum_curry (α := Qα) (β := Qβ)
       (fun p => unipotent_mul_diag r α hα p.1 • unipotent_mul_diag r β hβ p.2 • a.1)
       (Set.toFinite _)).symm]
-  rw [← finsum_comp_equiv (Ideal.Quotient.prodEquivSpanMul (β := β) hα)
+  have hαreg : IsLeftRegular α := (IsRegular.of_ne_zero hα).left
+  rw [← finsum_comp_equiv (Ideal.Quotient.prodEquivSpanMul hαreg β)
     (f := fun (k : v.adicCompletionIntegers F ⧸ Ideal.span {α * β}) =>
       unipotent_mul_diag r (α * β) (hα.mul hβ) k • a.1)]
   refine finsum_congr (fun p => ?_)
@@ -784,19 +785,16 @@ by
     unipotent_mul_diag_lift_mul, unipotent_mul_diag_eq_lift]
   apply unipotent_mul_diag_lift_smul_eq
   change (α * j.out + i.out) -
-    ((Ideal.Quotient.prodEquivSpanMul (β := β) hα) (i, j)).out ∈
+    (Ideal.Quotient.prodEquivSpanMul hαreg β (i, j)).out ∈
       Ideal.span ({α * β} : Set _)
-  have hkmk : (Ideal.Quotient.prodEquivSpanMul (β := β) hα) (i, j) =
-      Ideal.Quotient.mk (Ideal.span ({α * β} : Set _)) (i.out + α * j.out) := by
-    unfold Ideal.Quotient.prodEquivSpanMul
-    rfl
   have h1 :
-      ((Ideal.Quotient.prodEquivSpanMul (β := β) hα) (i, j)).out - (i.out + α * j.out)
+      (Ideal.Quotient.prodEquivSpanMul hαreg β (i, j)).out - (i.out + α * j.out)
         ∈ Ideal.span ({α * β} : Set _) := by
-    rw [← Ideal.Quotient.eq, Ideal.Quotient.mk_out, hkmk]
+    rw [← Ideal.Quotient.eq, Ideal.Quotient.mk_out,
+      Ideal.Quotient.prodEquivSpanMul_apply]
   have heq : (α * j.out + i.out) -
-      ((Ideal.Quotient.prodEquivSpanMul (β := β) hα) (i, j)).out =
-      -(((Ideal.Quotient.prodEquivSpanMul (β := β) hα) (i, j)).out -
+      (Ideal.Quotient.prodEquivSpanMul hαreg β (i, j)).out =
+      -((Ideal.Quotient.prodEquivSpanMul hαreg β (i, j)).out -
         (i.out + α * j.out)) := by ring
   rw [heq]; exact neg_mem h1
 
